@@ -2,13 +2,11 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import '../../services/api_service.dart';
 
-const _kBg      = Color(0xFF0A0E1A);
-const _kSurface = Color(0xFF101626);
-const _kCard    = Color(0xFF1A2035);
-const _kBorder  = Color(0xFF283050);
+const _kBg = Color(0xFF0A0E1A);
+const _kBorder = Color(0xFF283050);
 const _kPrimary = Color(0xFF6C63FF);
-const _kCyan    = Color(0xFF00E5FF);
-const _kText2   = Color(0xFF8892B0);
+const _kCyan = Color(0xFF00E5FF);
+const _kText2 = Color(0xFF8892B0);
 const _kSuccess = Color(0xFF34D399);
 
 class YamlGenerator extends StatefulWidget {
@@ -19,8 +17,8 @@ class YamlGenerator extends StatefulWidget {
 
 class _YamlGeneratorState extends State<YamlGenerator> {
   final _promptController = TextEditingController();
-  String _generatedYaml   = '';
-  bool _isGenerating      = false;
+  String _generatedYaml = '';
+  bool _isGenerating = false;
 
   final _quickPrompts = [
     '🚫 Blokir semua prompt injection attempt',
@@ -77,9 +75,9 @@ class _YamlGeneratorState extends State<YamlGenerator> {
           Container(
             padding: const EdgeInsets.all(14),
             decoration: BoxDecoration(
-              color: _kCyan.withOpacity(0.07),
+              color: _kCyan.withValues(alpha: 0.07),
               borderRadius: BorderRadius.circular(12),
-              border: Border.all(color: _kCyan.withOpacity(0.2)),
+              border: Border.all(color: _kCyan.withValues(alpha: 0.2)),
             ),
             child: const Row(
               children: [
@@ -98,29 +96,48 @@ class _YamlGeneratorState extends State<YamlGenerator> {
           const SizedBox(height: 20),
 
           // Quick prompts
-          const Text('Quick Templates:',
-            style: TextStyle(color: _kText2, fontSize: 12, fontWeight: FontWeight.w600)),
+          const Text(
+            'Quick Templates:',
+            style: TextStyle(
+              color: _kText2,
+              fontSize: 12,
+              fontWeight: FontWeight.w600,
+            ),
+          ),
           const SizedBox(height: 8),
           SizedBox(
             height: 38,
             child: ListView(
               scrollDirection: Axis.horizontal,
-              children: _quickPrompts.map((p) => Padding(
-                padding: const EdgeInsets.only(right: 8),
-                child: InkWell(
-                  onTap: () => setState(() => _promptController.text = p),
-                  borderRadius: BorderRadius.circular(20),
-                  child: Container(
-                    padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 8),
-                    decoration: BoxDecoration(
-                      color: _kBorder.withOpacity(0.8),
-                      borderRadius: BorderRadius.circular(20),
-                      border: Border.all(color: _kBorder),
+              children: _quickPrompts
+                  .map(
+                    (p) => Padding(
+                      padding: const EdgeInsets.only(right: 8),
+                      child: InkWell(
+                        onTap: () => setState(() => _promptController.text = p),
+                        borderRadius: BorderRadius.circular(20),
+                        child: Container(
+                          padding: const EdgeInsets.symmetric(
+                            horizontal: 14,
+                            vertical: 8,
+                          ),
+                          decoration: BoxDecoration(
+                            color: _kBorder.withValues(alpha: 0.8),
+                            borderRadius: BorderRadius.circular(20),
+                            border: Border.all(color: _kBorder),
+                          ),
+                          child: Text(
+                            p,
+                            style: const TextStyle(
+                              color: Colors.white70,
+                              fontSize: 12,
+                            ),
+                          ),
+                        ),
+                      ),
                     ),
-                    child: Text(p, style: const TextStyle(color: Colors.white70, fontSize: 12)),
-                  ),
-                ),
-              )).toList(),
+                  )
+                  .toList(),
             ),
           ),
           const SizedBox(height: 20),
@@ -148,25 +165,40 @@ class _YamlGeneratorState extends State<YamlGenerator> {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            const Row(children: [
-              Icon(Icons.edit_note_rounded, color: _kPrimary, size: 20),
-              SizedBox(width: 8),
-              Text('Describe Security Policy',
-                style: TextStyle(color: Colors.white, fontWeight: FontWeight.w700, fontSize: 14)),
-            ]),
+            const Row(
+              children: [
+                Icon(Icons.edit_note_rounded, color: _kPrimary, size: 20),
+                SizedBox(width: 8),
+                Text(
+                  'Describe Security Policy',
+                  style: TextStyle(
+                    color: Colors.white,
+                    fontWeight: FontWeight.w700,
+                    fontSize: 14,
+                  ),
+                ),
+              ],
+            ),
             const SizedBox(height: 4),
-            const Text('Jelaskan aturan keamanan yang Anda inginkan (Bahasa Indonesia/Inggris)',
-              style: TextStyle(color: _kText2, fontSize: 12)),
+            const Text(
+              'Jelaskan aturan keamanan yang Anda inginkan (Bahasa Indonesia/Inggris)',
+              style: TextStyle(color: _kText2, fontSize: 12),
+            ),
             const SizedBox(height: 16),
             Expanded(
               child: TextField(
                 controller: _promptController,
-                style: const TextStyle(color: Colors.white, fontSize: 13, height: 1.5),
+                style: const TextStyle(
+                  color: Colors.white,
+                  fontSize: 13,
+                  height: 1.5,
+                ),
                 maxLines: null,
                 expands: true,
                 textAlignVertical: TextAlignVertical.top,
                 decoration: const InputDecoration(
-                  hintText: 'Contoh: "Blokir semua permintaan yang mengandung pola '
+                  hintText:
+                      'Contoh: "Blokir semua permintaan yang mengandung pola '
                       'prompt injection, terutama yang mencoba '
                       'melewati filter dengan kata ignore previous instructions..."',
                   alignLabelWithHint: true,
@@ -180,16 +212,27 @@ class _YamlGeneratorState extends State<YamlGenerator> {
                 onPressed: _isGenerating ? null : _generate,
                 icon: _isGenerating
                     ? const SizedBox(
-                        width: 16, height: 16,
-                        child: CircularProgressIndicator(strokeWidth: 2, color: Colors.white))
+                        width: 16,
+                        height: 16,
+                        child: CircularProgressIndicator(
+                          strokeWidth: 2,
+                          color: Colors.white,
+                        ),
+                      )
                     : const Icon(Icons.auto_awesome, size: 18),
-                label: Text(_isGenerating ? 'Gemini sedang generate...' : '✨ Generate YAML Rule'),
+                label: Text(
+                  _isGenerating
+                      ? 'Gemini sedang generate...'
+                      : '✨ Generate YAML Rule',
+                ),
                 style: ElevatedButton.styleFrom(
                   backgroundColor: _kPrimary,
                   foregroundColor: Colors.white,
-                  disabledBackgroundColor: _kPrimary.withOpacity(0.4),
+                  disabledBackgroundColor: _kPrimary.withValues(alpha: 0.4),
                   padding: const EdgeInsets.symmetric(vertical: 14),
-                  shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(10),
+                  ),
                 ),
               ),
             ),
@@ -206,34 +249,55 @@ class _YamlGeneratorState extends State<YamlGenerator> {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            Row(children: [
-              const Icon(Icons.code_rounded, color: _kCyan, size: 20),
-              const SizedBox(width: 8),
-              const Text('Generated YAML Rule',
-                style: TextStyle(color: Colors.white, fontWeight: FontWeight.w700, fontSize: 14)),
-              const Spacer(),
-              if (_generatedYaml.isNotEmpty && !_generatedYaml.startsWith('#'))
-                InkWell(
-                  onTap: _copyToClipboard,
-                  borderRadius: BorderRadius.circular(8),
-                  child: Container(
-                    padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 6),
-                    decoration: BoxDecoration(
-                      color: _kSuccess.withOpacity(0.12),
-                      borderRadius: BorderRadius.circular(8),
-                      border: Border.all(color: _kSuccess.withOpacity(0.3)),
-                    ),
-                    child: const Row(children: [
-                      Icon(Icons.copy, color: _kSuccess, size: 14),
-                      SizedBox(width: 6),
-                      Text('Copy', style: TextStyle(color: _kSuccess, fontSize: 12)),
-                    ]),
+            Row(
+              children: [
+                const Icon(Icons.code_rounded, color: _kCyan, size: 20),
+                const SizedBox(width: 8),
+                const Text(
+                  'Generated YAML Rule',
+                  style: TextStyle(
+                    color: Colors.white,
+                    fontWeight: FontWeight.w700,
+                    fontSize: 14,
                   ),
                 ),
-            ]),
+                const Spacer(),
+                if (_generatedYaml.isNotEmpty &&
+                    !_generatedYaml.startsWith('#'))
+                  InkWell(
+                    onTap: _copyToClipboard,
+                    borderRadius: BorderRadius.circular(8),
+                    child: Container(
+                      padding: const EdgeInsets.symmetric(
+                        horizontal: 10,
+                        vertical: 6,
+                      ),
+                      decoration: BoxDecoration(
+                        color: _kSuccess.withValues(alpha: 0.12),
+                        borderRadius: BorderRadius.circular(8),
+                        border: Border.all(
+                          color: _kSuccess.withValues(alpha: 0.3),
+                        ),
+                      ),
+                      child: const Row(
+                        children: [
+                          Icon(Icons.copy, color: _kSuccess, size: 14),
+                          SizedBox(width: 6),
+                          Text(
+                            'Copy',
+                            style: TextStyle(color: _kSuccess, fontSize: 12),
+                          ),
+                        ],
+                      ),
+                    ),
+                  ),
+              ],
+            ),
             const SizedBox(height: 4),
-            const Text('Output Gemini AI – siap pakai untuk Veea Lobster Trap',
-              style: TextStyle(color: _kText2, fontSize: 12)),
+            const Text(
+              'Output Gemini AI – siap pakai untuk Veea Lobster Trap',
+              style: TextStyle(color: _kText2, fontSize: 12),
+            ),
             const SizedBox(height: 16),
             Expanded(
               child: _generatedYaml.isEmpty
@@ -241,14 +305,21 @@ class _YamlGeneratorState extends State<YamlGenerator> {
                       child: Column(
                         mainAxisAlignment: MainAxisAlignment.center,
                         children: [
-                          Icon(Icons.code_off_rounded,
-                            color: _kText2.withOpacity(0.3), size: 52),
+                          Icon(
+                            Icons.code_off_rounded,
+                            color: _kText2.withValues(alpha: 0.3),
+                            size: 52,
+                          ),
                           const SizedBox(height: 16),
-                          const Text('Output YAML akan muncul di sini',
-                            style: TextStyle(color: _kText2)),
+                          const Text(
+                            'Output YAML akan muncul di sini',
+                            style: TextStyle(color: _kText2),
+                          ),
                           const SizedBox(height: 4),
-                          const Text('setelah Anda klik "Generate"',
-                            style: TextStyle(color: _kText2, fontSize: 12)),
+                          const Text(
+                            'setelah Anda klik "Generate"',
+                            style: TextStyle(color: _kText2, fontSize: 12),
+                          ),
                         ],
                       ),
                     )

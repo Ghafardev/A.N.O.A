@@ -1,12 +1,10 @@
 import 'package:flutter/material.dart';
 
-const _kBg      = Color(0xFF0A0E1A);
-const _kSurface = Color(0xFF101626);
-const _kCard    = Color(0xFF1A2035);
-const _kBorder  = Color(0xFF283050);
+const _kBg = Color(0xFF0A0E1A);
+const _kBorder = Color(0xFF283050);
 const _kPrimary = Color(0xFF6C63FF);
-const _kCyan    = Color(0xFF00E5FF);
-const _kText2   = Color(0xFF8892B0);
+const _kCyan = Color(0xFF00E5FF);
+const _kText2 = Color(0xFF8892B0);
 
 // ─── Model Sumber Knowledge ───────────────────────────────────────────────────
 class KnowledgeSource {
@@ -53,15 +51,19 @@ class _RagBuilderState extends State<RagBuilder> {
   void _simulateFilePick() {
     // Placeholder: di Tahap 4 ini akan menggunakan file_picker
     setState(() {
-      _sources.add(KnowledgeSource(
-        name: 'Security_Report_${DateTime.now().millisecond}.pdf',
-        type: 'file',
-        icon: '📄',
-      ));
+      _sources.add(
+        KnowledgeSource(
+          name: 'Security_Report_${DateTime.now().millisecond}.pdf',
+          type: 'file',
+          icon: '📄',
+        ),
+      );
     });
     ScaffoldMessenger.of(context).showSnackBar(
       const SnackBar(
-        content: Text('File ditambahkan ke knowledge base (integrasi file_picker di Tahap 4)'),
+        content: Text(
+          'File ditambahkan ke knowledge base (integrasi file_picker di Tahap 4)',
+        ),
         backgroundColor: _kPrimary,
       ),
     );
@@ -105,9 +107,9 @@ class _RagBuilderState extends State<RagBuilder> {
     return Container(
       padding: const EdgeInsets.all(16),
       decoration: BoxDecoration(
-        color: _kPrimary.withOpacity(0.08),
+        color: _kPrimary.withValues(alpha: 0.08),
         borderRadius: BorderRadius.circular(12),
-        border: Border.all(color: _kPrimary.withOpacity(0.25)),
+        border: Border.all(color: _kPrimary.withValues(alpha: 0.25)),
       ),
       child: Row(
         children: [
@@ -117,7 +119,11 @@ class _RagBuilderState extends State<RagBuilder> {
             child: Text(
               'RAG Builder memungkinkan ANOA AI menggunakan dokumen spesifik organisasi Anda '
               'sebagai konteks tambahan, sehingga respons AI lebih relevan dan akurat.',
-              style: TextStyle(color: Colors.white70, fontSize: 13, height: 1.4),
+              style: TextStyle(
+                color: Colors.white70,
+                fontSize: 13,
+                height: 1.4,
+              ),
             ),
           ),
         ],
@@ -137,22 +143,29 @@ class _RagBuilderState extends State<RagBuilder> {
           padding: const EdgeInsets.symmetric(vertical: 36),
           decoration: BoxDecoration(
             border: Border.all(
-              color: _kPrimary.withOpacity(0.4),
+              color: _kPrimary.withValues(alpha: 0.4),
               style: BorderStyle.solid,
               width: 1.5,
             ),
             borderRadius: BorderRadius.circular(12),
-            color: _kPrimary.withOpacity(0.05),
+            color: _kPrimary.withValues(alpha: 0.05),
           ),
           child: const Column(
             children: [
               Icon(Icons.cloud_upload_outlined, color: _kPrimary, size: 40),
               SizedBox(height: 12),
-              Text('Klik untuk pilih file',
-                style: TextStyle(color: Colors.white, fontWeight: FontWeight.w600)),
+              Text(
+                'Klik untuk pilih file',
+                style: TextStyle(
+                  color: Colors.white,
+                  fontWeight: FontWeight.w600,
+                ),
+              ),
               SizedBox(height: 4),
-              Text('atau drag & drop ke sini',
-                style: TextStyle(color: _kText2, fontSize: 12)),
+              Text(
+                'atau drag & drop ke sini',
+                style: TextStyle(color: _kText2, fontSize: 12),
+              ),
             ],
           ),
         ),
@@ -192,9 +205,14 @@ class _RagBuilderState extends State<RagBuilder> {
                 ),
                 borderRadius: BorderRadius.circular(10),
               ),
-              child: const Text('Add',
+              child: const Text(
+                'Add',
                 style: TextStyle(
-                  color: Colors.white, fontWeight: FontWeight.w700, fontSize: 13)),
+                  color: Colors.white,
+                  fontWeight: FontWeight.w700,
+                  fontSize: 13,
+                ),
+              ),
             ),
           ),
         ],
@@ -215,8 +233,7 @@ class _RagBuilderState extends State<RagBuilder> {
                 children: [
                   Icon(Icons.folder_open_outlined, color: _kText2, size: 40),
                   SizedBox(height: 12),
-                  Text('Belum ada sumber',
-                    style: TextStyle(color: _kText2)),
+                  Text('Belum ada sumber', style: TextStyle(color: _kText2)),
                 ],
               ),
             )
@@ -225,7 +242,10 @@ class _RagBuilderState extends State<RagBuilder> {
               final s = _sources[i];
               return Container(
                 margin: const EdgeInsets.only(bottom: 8),
-                padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 12),
+                padding: const EdgeInsets.symmetric(
+                  horizontal: 14,
+                  vertical: 12,
+                ),
                 decoration: BoxDecoration(
                   color: _kBg,
                   borderRadius: BorderRadius.circular(10),
@@ -239,18 +259,31 @@ class _RagBuilderState extends State<RagBuilder> {
                       child: Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
-                          Text(s.name,
+                          Text(
+                            s.name,
                             style: const TextStyle(
-                              color: Colors.white, fontSize: 13),
+                              color: Colors.white,
+                              fontSize: 13,
+                            ),
                             maxLines: 1,
-                            overflow: TextOverflow.ellipsis),
-                          Text(s.type == 'file' ? 'Local File' : 'Online URL',
-                            style: const TextStyle(color: _kText2, fontSize: 11)),
+                            overflow: TextOverflow.ellipsis,
+                          ),
+                          Text(
+                            s.type == 'file' ? 'Local File' : 'Online URL',
+                            style: const TextStyle(
+                              color: _kText2,
+                              fontSize: 11,
+                            ),
+                          ),
                         ],
                       ),
                     ),
                     IconButton(
-                      icon: const Icon(Icons.delete_outline, color: _kText2, size: 18),
+                      icon: const Icon(
+                        Icons.delete_outline,
+                        color: _kText2,
+                        size: 18,
+                      ),
                       onPressed: () => _removeSource(i),
                       padding: EdgeInsets.zero,
                       constraints: const BoxConstraints(),
@@ -268,9 +301,12 @@ class _RagBuilderState extends State<RagBuilder> {
                   ? null
                   : () => ScaffoldMessenger.of(context).showSnackBar(
                       const SnackBar(
-                        content: Text('Knowledge base akan diproses di Tahap 4 (Backend Integration)'),
+                        content: Text(
+                          'Knowledge base akan diproses di Tahap 4 (Backend Integration)',
+                        ),
                         backgroundColor: Color(0xFF34D399),
-                      )),
+                      ),
+                    ),
               icon: const Icon(Icons.sync, size: 18),
               label: const Text('Proses Knowledge Base'),
               style: ElevatedButton.styleFrom(
@@ -278,7 +314,8 @@ class _RagBuilderState extends State<RagBuilder> {
                 foregroundColor: Colors.white,
                 padding: const EdgeInsets.symmetric(vertical: 14),
                 shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(10)),
+                  borderRadius: BorderRadius.circular(10),
+                ),
               ),
             ),
           ),
@@ -298,12 +335,19 @@ class _RagBuilderState extends State<RagBuilder> {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            Text(title,
+            Text(
+              title,
               style: const TextStyle(
-                color: Colors.white, fontWeight: FontWeight.w700, fontSize: 14)),
+                color: Colors.white,
+                fontWeight: FontWeight.w700,
+                fontSize: 14,
+              ),
+            ),
             const SizedBox(height: 4),
-            Text(subtitle,
-              style: const TextStyle(color: _kText2, fontSize: 12)),
+            Text(
+              subtitle,
+              style: const TextStyle(color: _kText2, fontSize: 12),
+            ),
             const SizedBox(height: 16),
             child,
           ],

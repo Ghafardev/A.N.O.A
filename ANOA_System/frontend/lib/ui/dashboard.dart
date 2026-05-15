@@ -5,16 +5,16 @@ import 'widgets/rag_builder.dart';
 import 'widgets/yaml_generator.dart';
 
 // ─── Konstanta Warna ─────────────────────────────────────────────────────────
-const kBg       = Color(0xFF0A0E1A);
-const kSurface  = Color(0xFF101626);
-const kCard     = Color(0xFF1A2035);
-const kBorder   = Color(0xFF283050);
-const kPrimary  = Color(0xFF6C63FF);
-const kCyan     = Color(0xFF00E5FF);
-const kSuccess  = Color(0xFF34D399);
-const kDanger   = Color(0xFFF87171);
-const kWarning  = Color(0xFFFBBF24);
-const kText2    = Color(0xFF8892B0);
+const kBg = Color(0xFF0A0E1A);
+const kSurface = Color(0xFF101626);
+const kCard = Color(0xFF1A2035);
+const kBorder = Color(0xFF283050);
+const kPrimary = Color(0xFF6C63FF);
+const kCyan = Color(0xFF00E5FF);
+const kSuccess = Color(0xFF34D399);
+const kDanger = Color(0xFFF87171);
+const kWarning = Color(0xFFFBBF24);
+const kText2 = Color(0xFF8892B0);
 
 // ─── Model Nav Item ───────────────────────────────────────────────────────────
 class _NavItem {
@@ -32,12 +32,12 @@ class DashboardScreen extends StatefulWidget {
 
 class _DashboardScreenState extends State<DashboardScreen> {
   int _selectedNav = 0;
-  bool _chatOpen   = false;
+  bool _chatOpen = false;
 
   final _navItems = const [
-    _NavItem(Icons.shield_outlined,   'Overview'),
-    _NavItem(Icons.storage_outlined,  'RAG Builder'),
-    _NavItem(Icons.code_rounded,      'YAML Generator'),
+    _NavItem(Icons.shield_outlined, 'Overview'),
+    _NavItem(Icons.storage_outlined, 'RAG Builder'),
+    _NavItem(Icons.code_rounded, 'YAML Generator'),
   ];
 
   @override
@@ -60,7 +60,10 @@ class _DashboardScreenState extends State<DashboardScreen> {
                         curve: Curves.easeInOut,
                         width: _chatOpen ? 380 : 0,
                         child: _chatOpen
-                            ? ChatAssistant(onClose: () => setState(() => _chatOpen = false))
+                            ? ChatAssistant(
+                                onClose: () =>
+                                    setState(() => _chatOpen = false),
+                              )
                             : const SizedBox.shrink(),
                       ),
                     ],
@@ -89,7 +92,8 @@ class _DashboardScreenState extends State<DashboardScreen> {
             child: Row(
               children: [
                 Container(
-                  width: 36, height: 36,
+                  width: 36,
+                  height: 36,
                   decoration: BoxDecoration(
                     gradient: const LinearGradient(
                       colors: [kPrimary, kCyan],
@@ -98,7 +102,11 @@ class _DashboardScreenState extends State<DashboardScreen> {
                     ),
                     borderRadius: BorderRadius.circular(10),
                   ),
-                  child: const Icon(Icons.security, color: Colors.white, size: 20),
+                  child: const Icon(
+                    Icons.security,
+                    color: Colors.white,
+                    size: 20,
+                  ),
                 ),
                 const SizedBox(width: 12),
                 const Text(
@@ -117,10 +125,15 @@ class _DashboardScreenState extends State<DashboardScreen> {
           // Label seksi
           Padding(
             padding: const EdgeInsets.symmetric(horizontal: 24),
-            child: Text('MAIN MENU', style: TextStyle(
-              fontSize: 10, letterSpacing: 1.5,
-              color: kText2, fontWeight: FontWeight.w600,
-            )),
+            child: Text(
+              'MAIN MENU',
+              style: TextStyle(
+                fontSize: 10,
+                letterSpacing: 1.5,
+                color: kText2,
+                fontWeight: FontWeight.w600,
+              ),
+            ),
           ),
           const SizedBox(height: 8),
 
@@ -136,13 +149,18 @@ class _DashboardScreenState extends State<DashboardScreen> {
             child: Row(
               children: [
                 Container(
-                  width: 8, height: 8,
+                  width: 8,
+                  height: 8,
                   decoration: const BoxDecoration(
-                    color: kSuccess, shape: BoxShape.circle,
+                    color: kSuccess,
+                    shape: BoxShape.circle,
                   ),
                 ),
                 const SizedBox(width: 10),
-                const Text('Backend Active', style: TextStyle(color: kText2, fontSize: 12)),
+                const Text(
+                  'Backend Active',
+                  style: TextStyle(color: kText2, fontSize: 12),
+                ),
               ],
             ),
           ),
@@ -161,23 +179,26 @@ class _DashboardScreenState extends State<DashboardScreen> {
         margin: const EdgeInsets.symmetric(horizontal: 12, vertical: 3),
         padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 12),
         decoration: BoxDecoration(
-          color: isSelected ? kPrimary.withOpacity(0.15) : Colors.transparent,
+          color: isSelected
+              ? kPrimary.withValues(alpha: 0.15)
+              : Colors.transparent,
           borderRadius: BorderRadius.circular(10),
           border: isSelected
-              ? Border.all(color: kPrimary.withOpacity(0.4), width: 1)
+              ? Border.all(color: kPrimary.withValues(alpha: 0.4), width: 1)
               : null,
         ),
         child: Row(
           children: [
-            Icon(item.icon,
-              color: isSelected ? kPrimary : kText2, size: 20),
+            Icon(item.icon, color: isSelected ? kPrimary : kText2, size: 20),
             const SizedBox(width: 12),
-            Text(item.label,
+            Text(
+              item.label,
               style: TextStyle(
                 color: isSelected ? Colors.white : kText2,
                 fontWeight: isSelected ? FontWeight.w600 : FontWeight.w400,
                 fontSize: 14,
-              )),
+              ),
+            ),
           ],
         ),
       ),
@@ -186,7 +207,11 @@ class _DashboardScreenState extends State<DashboardScreen> {
 
   // ── Top Bar ───────────────────────────────────────────────────────────────────
   Widget _buildTopBar() {
-    final titles = ['Security Overview', 'RAG Knowledge Builder', 'YAML Rules Generator'];
+    final titles = [
+      'Security Overview',
+      'RAG Knowledge Builder',
+      'YAML Rules Generator',
+    ];
     final subtitles = [
       'Real-time threat monitoring & analytics',
       'Kelola sumber knowledge base untuk AI',
@@ -204,12 +229,19 @@ class _DashboardScreenState extends State<DashboardScreen> {
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                Text(titles[_selectedNav],
+                Text(
+                  titles[_selectedNav],
                   style: const TextStyle(
-                    fontSize: 20, fontWeight: FontWeight.w700, color: Colors.white)),
+                    fontSize: 20,
+                    fontWeight: FontWeight.w700,
+                    color: Colors.white,
+                  ),
+                ),
                 const SizedBox(height: 2),
-                Text(subtitles[_selectedNav],
-                  style: const TextStyle(color: kText2, fontSize: 13)),
+                Text(
+                  subtitles[_selectedNav],
+                  style: const TextStyle(color: kText2, fontSize: 13),
+                ),
               ],
             ),
           ),
@@ -237,16 +269,22 @@ class _DashboardScreenState extends State<DashboardScreen> {
       child: Container(
         padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 10),
         decoration: BoxDecoration(
-          color: color.withOpacity(0.12),
+          color: color.withValues(alpha: 0.12),
           borderRadius: BorderRadius.circular(10),
-          border: Border.all(color: color.withOpacity(0.3)),
+          border: Border.all(color: color.withValues(alpha: 0.3)),
         ),
         child: Row(
           children: [
             Icon(icon, color: color, size: 18),
             const SizedBox(width: 8),
-            Text(label, style: TextStyle(
-              color: color, fontWeight: FontWeight.w600, fontSize: 13)),
+            Text(
+              label,
+              style: TextStyle(
+                color: color,
+                fontWeight: FontWeight.w600,
+                fontSize: 13,
+              ),
+            ),
           ],
         ),
       ),
@@ -256,10 +294,14 @@ class _DashboardScreenState extends State<DashboardScreen> {
   // ── Konten Utama ──────────────────────────────────────────────────────────────
   Widget _buildContent() {
     switch (_selectedNav) {
-      case 0: return _buildOverviewPage();
-      case 1: return const RagBuilder();
-      case 2: return const YamlGenerator();
-      default: return const SizedBox.shrink();
+      case 0:
+        return _buildOverviewPage();
+      case 1:
+        return const RagBuilder();
+      case 2:
+        return const YamlGenerator();
+      default:
+        return const SizedBox.shrink();
     }
   }
 
@@ -273,13 +315,37 @@ class _DashboardScreenState extends State<DashboardScreen> {
           // Stat Cards
           Row(
             children: [
-              _buildStatCard('Threats Detected',  '1,247', Icons.warning_amber_rounded, kDanger,  '+12%'),
+              _buildStatCard(
+                'Threats Detected',
+                '1,247',
+                Icons.warning_amber_rounded,
+                kDanger,
+                '+12%',
+              ),
               const SizedBox(width: 16),
-              _buildStatCard('Requests Blocked',  '389',   Icons.block_rounded,          kWarning, '+5%'),
+              _buildStatCard(
+                'Requests Blocked',
+                '389',
+                Icons.block_rounded,
+                kWarning,
+                '+5%',
+              ),
               const SizedBox(width: 16),
-              _buildStatCard('Safe Requests',     '4,821', Icons.check_circle_outline,   kSuccess, '+3%'),
+              _buildStatCard(
+                'Safe Requests',
+                '4,821',
+                Icons.check_circle_outline,
+                kSuccess,
+                '+3%',
+              ),
               const SizedBox(width: 16),
-              _buildStatCard('Active YAML Rules', '24',    Icons.code_rounded,           kCyan,    '0%'),
+              _buildStatCard(
+                'Active YAML Rules',
+                '24',
+                Icons.code_rounded,
+                kCyan,
+                '0%',
+              ),
             ],
           ),
           const SizedBox(height: 24),
@@ -323,7 +389,12 @@ class _DashboardScreenState extends State<DashboardScreen> {
   }
 
   Widget _buildStatCard(
-      String label, String value, IconData icon, Color color, String change) {
+    String label,
+    String value,
+    IconData icon,
+    Color color,
+    String change,
+  ) {
     return Expanded(
       child: Card(
         child: Padding(
@@ -337,29 +408,42 @@ class _DashboardScreenState extends State<DashboardScreen> {
                   Container(
                     padding: const EdgeInsets.all(10),
                     decoration: BoxDecoration(
-                      color: color.withOpacity(0.12),
+                      color: color.withValues(alpha: 0.12),
                       borderRadius: BorderRadius.circular(10),
                     ),
                     child: Icon(icon, color: color, size: 20),
                   ),
                   Container(
-                    padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+                    padding: const EdgeInsets.symmetric(
+                      horizontal: 8,
+                      vertical: 4,
+                    ),
                     decoration: BoxDecoration(
-                      color: kSuccess.withOpacity(0.1),
+                      color: kSuccess.withValues(alpha: 0.1),
                       borderRadius: BorderRadius.circular(20),
                     ),
-                    child: Text(change,
-                      style: const TextStyle(color: kSuccess, fontSize: 11, fontWeight: FontWeight.w600)),
+                    child: Text(
+                      change,
+                      style: const TextStyle(
+                        color: kSuccess,
+                        fontSize: 11,
+                        fontWeight: FontWeight.w600,
+                      ),
+                    ),
                   ),
                 ],
               ),
               const SizedBox(height: 16),
-              Text(value,
+              Text(
+                value,
                 style: const TextStyle(
-                  fontSize: 28, fontWeight: FontWeight.w800, color: Colors.white)),
+                  fontSize: 28,
+                  fontWeight: FontWeight.w800,
+                  color: Colors.white,
+                ),
+              ),
               const SizedBox(height: 4),
-              Text(label,
-                style: const TextStyle(color: kText2, fontSize: 13)),
+              Text(label, style: const TextStyle(color: kText2, fontSize: 13)),
             ],
           ),
         ),
@@ -378,12 +462,16 @@ class _DashboardScreenState extends State<DashboardScreen> {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            Text(title,
+            Text(
+              title,
               style: const TextStyle(
-                fontSize: 15, fontWeight: FontWeight.w700, color: Colors.white)),
+                fontSize: 15,
+                fontWeight: FontWeight.w700,
+                color: Colors.white,
+              ),
+            ),
             const SizedBox(height: 4),
-            Text(subtitle,
-              style: const TextStyle(color: kText2, fontSize: 12)),
+            Text(subtitle, style: const TextStyle(color: kText2, fontSize: 12)),
             const SizedBox(height: 16),
             child,
           ],
@@ -394,12 +482,12 @@ class _DashboardScreenState extends State<DashboardScreen> {
 
   Widget _buildThreatTable() {
     final threats = [
-      ['2m ago',  'Prompt Injection',   '192.168.1.45',  'BLOCKED',  kDanger],
-      ['8m ago',  'Data Leak Attempt',  '10.0.0.12',     'BLOCKED',  kDanger],
-      ['15m ago', 'Phishing Pattern',   '203.45.12.8',   'BLOCKED',  kWarning],
-      ['22m ago', 'Credential Stuffing','172.16.0.3',    'BLOCKED',  kDanger],
-      ['31m ago', 'Normal Request',     '192.168.1.100', 'ALLOWED',  kSuccess],
-      ['45m ago', 'Normal Request',     '10.0.0.55',     'ALLOWED',  kSuccess],
+      ['2m ago', 'Prompt Injection', '192.168.1.45', 'BLOCKED', kDanger],
+      ['8m ago', 'Data Leak Attempt', '10.0.0.12', 'BLOCKED', kDanger],
+      ['15m ago', 'Phishing Pattern', '203.45.12.8', 'BLOCKED', kWarning],
+      ['22m ago', 'Credential Stuffing', '172.16.0.3', 'BLOCKED', kDanger],
+      ['31m ago', 'Normal Request', '192.168.1.100', 'ALLOWED', kSuccess],
+      ['45m ago', 'Normal Request', '10.0.0.55', 'ALLOWED', kSuccess],
     ];
 
     return Column(
@@ -408,47 +496,112 @@ class _DashboardScreenState extends State<DashboardScreen> {
         Container(
           padding: const EdgeInsets.symmetric(vertical: 10, horizontal: 12),
           decoration: BoxDecoration(
-            color: kBorder.withOpacity(0.5),
+            color: kBorder.withValues(alpha: 0.5),
             borderRadius: BorderRadius.circular(8),
           ),
           child: const Row(
             children: [
-              Expanded(flex: 2, child: Text('Time',    style: TextStyle(color: kText2, fontSize: 12, fontWeight: FontWeight.w600))),
-              Expanded(flex: 3, child: Text('Type',    style: TextStyle(color: kText2, fontSize: 12, fontWeight: FontWeight.w600))),
-              Expanded(flex: 3, child: Text('Source',  style: TextStyle(color: kText2, fontSize: 12, fontWeight: FontWeight.w600))),
-              Expanded(flex: 2, child: Text('Status',  style: TextStyle(color: kText2, fontSize: 12, fontWeight: FontWeight.w600))),
-            ],
-          ),
-        ),
-        ...threats.map((row) => Container(
-          padding: const EdgeInsets.symmetric(vertical: 12, horizontal: 12),
-          decoration: const BoxDecoration(
-            border: Border(bottom: BorderSide(color: kBorder, width: 0.5)),
-          ),
-          child: Row(
-            children: [
-              Expanded(flex: 2, child: Text(row[0] as String, style: const TextStyle(color: kText2, fontSize: 13))),
-              Expanded(flex: 3, child: Text(row[1] as String, style: const TextStyle(color: Colors.white, fontSize: 13))),
-              Expanded(flex: 3, child: Text(row[2] as String, style: const TextStyle(color: kText2, fontSize: 13))),
               Expanded(
                 flex: 2,
-                child: Container(
-                  padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
-                  decoration: BoxDecoration(
-                    color: (row[4] as Color).withOpacity(0.1),
-                    borderRadius: BorderRadius.circular(20),
+                child: Text(
+                  'Time',
+                  style: TextStyle(
+                    color: kText2,
+                    fontSize: 12,
+                    fontWeight: FontWeight.w600,
                   ),
-                  child: Text(row[3] as String,
-                    style: TextStyle(
-                      color: row[4] as Color,
-                      fontSize: 11,
-                      fontWeight: FontWeight.w700,
-                    )),
+                ),
+              ),
+              Expanded(
+                flex: 3,
+                child: Text(
+                  'Type',
+                  style: TextStyle(
+                    color: kText2,
+                    fontSize: 12,
+                    fontWeight: FontWeight.w600,
+                  ),
+                ),
+              ),
+              Expanded(
+                flex: 3,
+                child: Text(
+                  'Source',
+                  style: TextStyle(
+                    color: kText2,
+                    fontSize: 12,
+                    fontWeight: FontWeight.w600,
+                  ),
+                ),
+              ),
+              Expanded(
+                flex: 2,
+                child: Text(
+                  'Status',
+                  style: TextStyle(
+                    color: kText2,
+                    fontSize: 12,
+                    fontWeight: FontWeight.w600,
+                  ),
                 ),
               ),
             ],
           ),
-        )),
+        ),
+        ...threats.map(
+          (row) => Container(
+            padding: const EdgeInsets.symmetric(vertical: 12, horizontal: 12),
+            decoration: const BoxDecoration(
+              border: Border(bottom: BorderSide(color: kBorder, width: 0.5)),
+            ),
+            child: Row(
+              children: [
+                Expanded(
+                  flex: 2,
+                  child: Text(
+                    row[0] as String,
+                    style: const TextStyle(color: kText2, fontSize: 13),
+                  ),
+                ),
+                Expanded(
+                  flex: 3,
+                  child: Text(
+                    row[1] as String,
+                    style: const TextStyle(color: Colors.white, fontSize: 13),
+                  ),
+                ),
+                Expanded(
+                  flex: 3,
+                  child: Text(
+                    row[2] as String,
+                    style: const TextStyle(color: kText2, fontSize: 13),
+                  ),
+                ),
+                Expanded(
+                  flex: 2,
+                  child: Container(
+                    padding: const EdgeInsets.symmetric(
+                      horizontal: 8,
+                      vertical: 4,
+                    ),
+                    decoration: BoxDecoration(
+                      color: (row[4] as Color).withValues(alpha: 0.1),
+                      borderRadius: BorderRadius.circular(20),
+                    ),
+                    child: Text(
+                      row[3] as String,
+                      style: TextStyle(
+                        color: row[4] as Color,
+                        fontSize: 11,
+                        fontWeight: FontWeight.w700,
+                      ),
+                    ),
+                  ),
+                ),
+              ],
+            ),
+          ),
+        ),
       ],
     );
   }
@@ -465,9 +618,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
             child: SizedBox(
               width: 480,
               height: 600,
-              child: ChatAssistant(
-                onClose: () => Navigator.of(context).pop(),
-              ),
+              child: ChatAssistant(onClose: () => Navigator.of(context).pop()),
             ),
           ),
         );
