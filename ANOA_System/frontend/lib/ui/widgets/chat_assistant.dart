@@ -1,24 +1,43 @@
 import 'package:flutter/material.dart';
 import '../../services/api_service.dart';
 
-const _kBg      = Color(0xFF0A0E1A);
-const _kSurface = Color(0xFF101626);
 const _kCard    = Color(0xFF1A2035);
 const _kBorder  = Color(0xFF283050);
 const _kPrimary = Color(0xFF6C63FF);
 const _kCyan    = Color(0xFF00E5FF);
+const _kDanger  = Color(0xFFF87171);
 const _kText2   = Color(0xFF8892B0);
+const _kSuccess = Color(0xFF34D399);
+const _kWarning = Color(0xFFFBBF24);
+const _kBg      = Color(0xFF0A0E1A);
+
+// ─── Mode Configuration ───────────────────────────────────────────────────────
+class _ModeConfig {
+  final String id;
+  final String label;
+  final String emoji;
+  final Color color;
+  final String hint;
+  const _ModeConfig(this.id, this.label, this.emoji, this.color, this.hint);
+}
+
+const _modes = [
+  _ModeConfig('blue_team',           'Blue Team',   '🔵', _kCyan,    'Deteksi ancaman & rekomendasi pertahanan...'),
+  _ModeConfig('red_team',            'Red Team',    '🔴', _kDanger,  'Analisis kerentanan & vektor serangan...'),
+  _ModeConfig('phishing',            'Phishing',    '🎣', _kWarning, 'Tempel teks email/URL yang dicurigai phishing...'),
+  _ModeConfig('log_audit',           'Log Audit',   '📋', _kPrimary, 'Tempel log server/aplikasi/SIEM untuk diaudit...'),
+  _ModeConfig('credential_detector', 'Cred. Detect','🔐', _kSuccess, 'Tempel kode atau teks yang ingin dicek credential-nya...'),
+];
 
 // ─── Model Pesan Chat ─────────────────────────────────────────────────────────
 class ChatMessage {
   final String text;
   final bool isUser;
   final DateTime time;
-  ChatMessage({required this.text, required this.isUser})
-      : time = DateTime.now();
+  ChatMessage({required this.text, required this.isUser}) : time = DateTime.now();
 }
 
-// ─── Widget Chat Assistant (Reusable) ────────────────────────────────────────
+// ─── Widget Chat Assistant ────────────────────────────────────────────────────
 class ChatAssistant extends StatefulWidget {
   final VoidCallback? onClose;
   const ChatAssistant({super.key, this.onClose});
@@ -28,22 +47,27 @@ class ChatAssistant extends StatefulWidget {
 }
 
 class _ChatAssistantState extends State<ChatAssistant> {
-  final _controller    = TextEditingController();
-  final _scrollCtrl    = ScrollController();
+  final _controller  = TextEditingController();
+  final _scrollCtrl  = ScrollController();
+  bool _isLoading    = false;
+  String _modeId     = 'blue_team';
+
   final List<ChatMessage> _messages = [
     ChatMessage(
-      text: '👋 Halo! Saya **ANOA AI Assistant** – Purple Team Security.\n\n'
-            'Anda bisa bertanya tentang:\n'
-            '• Analisis kerentanan kode\n'
-            '• Deteksi pola phishing\n'
-            '• Audit log keamanan\n'
-            '• Strategi mitigasi ancaman\n\n'
-            'Pilih mode di bawah, lalu ketik pesan Anda.',
+      text: '👋 Halo! Saya **ANOA AI** – Purple Team Security Assistant.\n\n'
+            'Pilih mode analisis di bawah, lalu kirim teks, kode, log, atau URL '
+            'yang ingin Anda analisis. Saya akan memprosesnya menggunakan Gemini AI.\n\n'
+            '🔵 **Blue Team** – Pertahanan & mitigasi\n'
+            '🔴 **Red Team** – Analisis kerentanan\n'
+            '🎣 **Phishing** – Deteksi social engineering\n'
+            '📋 **Log Audit** – Analisis log & SOC\n'
+            '🔐 **Cred. Detect** – Deteksi credential bocor',
       isUser: false,
     ),
   ];
-  bool _isLoading = false;
-  String _mode = 'blue_team';
+
+  _ModeConfig get _currentMode =>
+      _modes.firstWhere((m) => m.id == _modeId, orElse: () => _modes.first);
 
   @override
   void dispose() {
@@ -52,9 +76,9 @@ class _ChatAssistantState extends State<ChatAssistant> {
     super.dispose();
   }
 
-  Future<void> _sendMessage() async {
+  Future<void> _send() async {
     final text = _controller.text.trim();
-    if (text.isEmpty) return;
+    if (text.isEmpty || _isLoading) return;
 
     setState(() {
       _messages.add(ChatMessage(text: text, isUser: true));
@@ -63,7 +87,7 @@ class _ChatAssistantState extends State<ChatAssistant> {
     });
     _scrollToBottom();
 
-    final reply = await ApiService.analyze(data: text, mode: _mode);
+    final reply = await ApiService.analyze(data: text, mode: _modeId);
 
     setState(() {
       _messages.add(ChatMessage(text: reply, isUser: false));
@@ -88,22 +112,21 @@ class _ChatAssistantState extends State<ChatAssistant> {
   Widget build(BuildContext context) {
     return Container(
       decoration: const BoxDecoration(
-        color: _kSurface,
+        color: Color(0xFF101626),
         border: Border(left: BorderSide(color: _kBorder)),
       ),
       child: Column(
         children: [
           _buildHeader(),
           _buildModeSelector(),
-          Expanded(child: _buildMessageList()),
-          if (_isLoading) _buildTypingIndicator(),
-          _buildInputBar(),
+          Expanded(child: _buildMessages()),
+          if (_isLoading) _buildTyping(),
+          _buildInput(),
         ],
       ),
     );
   }
 
-  // ── Header ──────────────────────────────────────────────────────────────────
   Widget _buildHeader() {
     return Container(
       padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 14),
@@ -126,15 +149,14 @@ class _ChatAssistantState extends State<ChatAssistant> {
             child: const Icon(Icons.smart_toy_outlined, color: Colors.white, size: 18),
           ),
           const SizedBox(width: 10),
-          const Expanded(
+          Expanded(
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                Text('ANOA AI',
-                  style: TextStyle(
-                    color: Colors.white, fontWeight: FontWeight.w700, fontSize: 14)),
-                Text('Purple Team Assistant',
-                  style: TextStyle(color: _kText2, fontSize: 11)),
+                const Text('ANOA AI',
+                  style: TextStyle(color: Colors.white, fontWeight: FontWeight.w700, fontSize: 14)),
+                Text('Mode: ${_currentMode.emoji} ${_currentMode.label}',
+                  style: TextStyle(color: _currentMode.color, fontSize: 11, fontWeight: FontWeight.w600)),
               ],
             ),
           ),
@@ -150,53 +172,49 @@ class _ChatAssistantState extends State<ChatAssistant> {
     );
   }
 
-  // ── Mode Selector ────────────────────────────────────────────────────────────
   Widget _buildModeSelector() {
     return Container(
-      padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
+      padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 8),
       decoration: const BoxDecoration(
         border: Border(bottom: BorderSide(color: _kBorder)),
       ),
-      child: Row(
-        children: [
-          _buildModeBtn('red_team',  '🔴 Red Team',  const Color(0xFFF87171)),
-          const SizedBox(width: 6),
-          _buildModeBtn('blue_team', '🔵 Blue Team', _kCyan),
-        ],
-      ),
-    );
-  }
-
-  Widget _buildModeBtn(String mode, String label, Color color) {
-    final isSelected = _mode == mode;
-    return Expanded(
-      child: InkWell(
-        onTap: () => setState(() => _mode = mode),
-        borderRadius: BorderRadius.circular(8),
-        child: AnimatedContainer(
-          duration: const Duration(milliseconds: 200),
-          padding: const EdgeInsets.symmetric(vertical: 8),
-          decoration: BoxDecoration(
-            color: isSelected ? color.withOpacity(0.15) : Colors.transparent,
-            borderRadius: BorderRadius.circular(8),
-            border: Border.all(
-              color: isSelected ? color.withOpacity(0.5) : _kBorder),
-          ),
-          child: Center(
-            child: Text(label,
-              style: TextStyle(
-                color: isSelected ? color : _kText2,
-                fontSize: 12,
-                fontWeight: isSelected ? FontWeight.w700 : FontWeight.w400,
-              )),
-          ),
+      child: SingleChildScrollView(
+        scrollDirection: Axis.horizontal,
+        child: Row(
+          children: _modes.map((m) {
+            final selected = _modeId == m.id;
+            return Padding(
+              padding: const EdgeInsets.only(right: 6),
+              child: InkWell(
+                onTap: () => setState(() => _modeId = m.id),
+                borderRadius: BorderRadius.circular(20),
+                child: AnimatedContainer(
+                  duration: const Duration(milliseconds: 200),
+                  padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
+                  decoration: BoxDecoration(
+                    color: selected ? m.color.withOpacity(0.15) : Colors.transparent,
+                    borderRadius: BorderRadius.circular(20),
+                    border: Border.all(
+                      color: selected ? m.color.withOpacity(0.5) : _kBorder),
+                  ),
+                  child: Text(
+                    '${m.emoji} ${m.label}',
+                    style: TextStyle(
+                      color: selected ? m.color : _kText2,
+                      fontSize: 11,
+                      fontWeight: selected ? FontWeight.w700 : FontWeight.w400,
+                    ),
+                  ),
+                ),
+              ),
+            );
+          }).toList(),
         ),
       ),
     );
   }
 
-  // ── Daftar Pesan ─────────────────────────────────────────────────────────────
-  Widget _buildMessageList() {
+  Widget _buildMessages() {
     return ListView.builder(
       controller: _scrollCtrl,
       padding: const EdgeInsets.all(12),
@@ -224,7 +242,7 @@ class _ChatAssistantState extends State<ChatAssistant> {
               ? null
               : Border.all(color: _kBorder, width: 0.5),
         ),
-        child: Text(
+        child: SelectableText(
           msg.text,
           style: TextStyle(
             color: msg.isUser ? Colors.white : Colors.white.withOpacity(0.9),
@@ -236,25 +254,24 @@ class _ChatAssistantState extends State<ChatAssistant> {
     );
   }
 
-  Widget _buildTypingIndicator() {
+  Widget _buildTyping() {
     return Padding(
       padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 6),
       child: Row(
         children: [
-          const SizedBox(
+          SizedBox(
             width: 16, height: 16,
-            child: CircularProgressIndicator(strokeWidth: 2, color: _kPrimary),
+            child: CircularProgressIndicator(strokeWidth: 2, color: _currentMode.color),
           ),
           const SizedBox(width: 10),
-          const Text('ANOA AI sedang menganalisis...',
-            style: TextStyle(color: _kText2, fontSize: 12)),
+          Text('${_currentMode.emoji} Gemini sedang menganalisis...',
+            style: const TextStyle(color: _kText2, fontSize: 12)),
         ],
       ),
     );
   }
 
-  // ── Input Bar ─────────────────────────────────────────────────────────────────
-  Widget _buildInputBar() {
+  Widget _buildInput() {
     return Container(
       padding: const EdgeInsets.all(12),
       decoration: const BoxDecoration(
@@ -268,23 +285,25 @@ class _ChatAssistantState extends State<ChatAssistant> {
               controller: _controller,
               style: const TextStyle(color: Colors.white, fontSize: 13),
               maxLines: null,
-              onSubmitted: (_) => _sendMessage(),
-              decoration: const InputDecoration(
-                hintText: 'Masukkan query keamanan...',
-                contentPadding: EdgeInsets.symmetric(horizontal: 14, vertical: 12),
+              onSubmitted: (_) => _send(),
+              decoration: InputDecoration(
+                hintText: _currentMode.hint,
+                contentPadding: const EdgeInsets.symmetric(horizontal: 14, vertical: 12),
                 isDense: true,
               ),
             ),
           ),
           const SizedBox(width: 8),
           InkWell(
-            onTap: _isLoading ? null : _sendMessage,
+            onTap: _isLoading ? null : _send,
             borderRadius: BorderRadius.circular(10),
             child: Container(
               padding: const EdgeInsets.all(12),
               decoration: BoxDecoration(
-                gradient: const LinearGradient(
-                  colors: [_kPrimary, _kCyan],
+                gradient: LinearGradient(
+                  colors: _isLoading
+                      ? [_kPrimary.withOpacity(0.4), _kCyan.withOpacity(0.4)]
+                      : [_kPrimary, _kCyan],
                   begin: Alignment.topLeft,
                   end: Alignment.bottomRight,
                 ),
