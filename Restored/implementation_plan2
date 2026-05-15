@@ -1,0 +1,56 @@
+# Tahap 1: Planning & Requirements (ANOA System) - V2
+
+Sesuai dengan masukan Anda, berikut adalah spesifikasi *requirements* yang telah disempurnakan untuk ANOA System.
+
+> [!IMPORTANT]
+> **User Review Required**
+> Ini adalah versi final dari *Requirements* Tahap 1. Jika Anda sudah puas dengan fitur-fitur ini, kita akan menyetujui rencana ini, lalu saya akan membuat **Daftar Tugas (task.md)** dan kita bisa mulai masuk ke fase eksekusi (setup environment & arsitektur proyek).
+
+## 1. Fitur Utama Sistem ANOA (MVP)
+
+1.  **Dashboard Keamanan Visual (Flutter):**
+    *   **Data Visualization:** Grafik analisis interaktif (*charts*, *circle percentage* / *pie charts*) untuk memvisualisasikan log inspeksi, tingkat ancaman, dan metrik keamanan.
+    *   **AI Assistant Interface:** Tersedia dalam dua mode: 
+        *   *Side Panel* (berada di samping antarmuka utama).
+        *   *Pop-up / Flying Widget* (mengambang, memberikan akses cepat dan efisien tanpa mengganggu panel utama).
+2.  **RAG (Retrieval-Augmented Generation) Builder Berbasis GUI:**
+    *   Fitur *knowledge management* mirip *NotebookLM* langsung di dalam dashboard.
+    *   Pengguna dapat mengunggah dokumen lokal, menautkan dokumen online, atau memasukkan URL *website* sebagai sumber data (*knowledge base*) agar respons Gemini semakin spesifik sesuai dengan kebutuhan spesifik organisasi.
+3.  **Purple Team AI Assistant (Gemini API):**
+    *   Fokus pada *use-case* unggulan hackathon: **Deteksi Phishing, Audit Log, Credential Detector, dan Analisis Log.**
+4.  **Trust Layer & Dynamic Firewall (Veea Lobster Trap):**
+    *   Menggunakan *ruleset* bawaan Lobster Trap untuk fondasi keamanan dasar (mencegah DLP dan *Prompt Injection*).
+    *   **Custom YAML Rules Generator:** Pengguna dapat membuat atau memodifikasi *rules* keamanan kustom langsung dari UI Dashboard atau men-*generate*-nya secara otomatis melalui asisten *chat* Gemini. Ini memungkinkan konfigurasi tanpa perlu melakukan modifikasi kode dari *root* aplikasi (bebas *coding*).
+
+## 2. Agentic Workflows
+
+Sistem ANOA mendukung berbagai skenario *workflow* untuk mencakup seluruh aspek keamanan:
+
+*   **A. Vulnerability Assessment & Mitigation (Dasar):** Input -> Lobster Trap (Outbound DPI) -> Gemini API -> Lobster Trap (Inbound DPI) -> Hasil di Dashboard.
+*   **B. Red Teaming Workflow:** AI melakukan simulasi taktik penyerangan untuk mencari celah keamanan berdasarkan data log atau infrastruktur yang diunggah pengguna.
+*   **C. Blue Teaming Workflow:** AI fokus mendeteksi anomali (analisis log masif, *credential leak*) dan merumuskan langkah mitigasi atau *patching*.
+*   **D. Real Attack Simulation (by AI Agent):** Agen AI ANOA bertindak sebagai aktor ancaman lanjutan (mensimulasikan perilaku AI penyerang seperti Claude Mythos) untuk menguji seberapa kuat pertahanan parameter yang diberikan secara *real-time*.
+*   **E. Real Defense Automation & Manual Planning:**
+    *   *Automation:* ANOA AI secara otomatis merespons simulasi serangan dengan men-*generate* aturan blokir keamanan (YAML) secara *on-the-fly* untuk Lobster Trap.
+    *   *Manual Planning:* Mode khusus untuk profesional keamanan; AI bertindak sebagai asisten/kopilot yang memberikan wawasan, sementara keputusan akhir, perencanaan manual, dan eksekusi pertahanan tetap berada di tangan ahli (*Human-in-the-Loop*).
+
+## 3. Skema Integrasi API
+
+```mermaid
+sequenceDiagram
+    participant U as User / Flutter App
+    participant L as Veea Lobster Trap (Proxy)
+    participant G as Google Gemini API
+
+    U->>L: HTTP POST /v1/models/gemini... (Termasuk Data RAG)
+    Note over L: Outbound DPI (Cek Ruleset Bawaan & Custom YAML)
+    
+    alt Jika Payload Berbahaya
+        L-->>U: HTTP 403 Forbidden (Blocked by Policy)
+    else Jika Payload Aman
+        L->>G: Teruskan HTTP POST ke API Google
+        G-->>L: Respons JSON (Skenario Red/Blue Team)
+        Note over L: Inbound DPI (Mencegah AI Hallucination/Payload)
+        L-->>U: Teruskan Respons JSON
+    end
+```

@@ -1,0 +1,36 @@
+ANOA System planning and 20 days of development.
+
+Menggunakan Dart dan Antigravity IDE adalah pilihan yang sangat efektif dan tepat karena Antigravity secara khusus dicantumkan dalam sumber sebagai salah satu alat pendukung resmi untuk pengembangan dalam hackathon ini.
+Berikut adalah rancangan pengembangan aplikasi Anda serta panduan integrasi teknologi yang diminta:
+1. Urutan Pengembangan: Planning vs Design
+Berdasarkan tren diskusi di Stack Overflow, pengembang umumnya memulai dengan Planning (Perencanaan) sebelum masuk ke desain UI/UX. Hal ini dilakukan untuk menentukan arsitektur sistem, pemilihan teknologi (seperti design patterns), dan logika algoritma sebelum menentukan tampilan. Dengan perencanaan yang matang, Anda memastikan bahwa desain yang dibuat nantinya secara teknis dapat diimplementasikan.
+2. Rancangan Pengembangan Aplikasi (23 Hari)
+Meskipun fase build utama hackathon ini berlangsung dari 11–19 Mei, berikut adalah jadwal 23 hari jika Anda ingin mengembangkan proyek ini secara mendalam:
+
+    Hari 1-4 (Planning & Requirements): Menentukan fitur utama sistem ANOA, mendefinisikan agentic workflows, dan menyusun skema integrasi API Gemini serta Lobster Trap.
+    Hari 5-8 (Architecture & Design): Membuat arsitektur aplikasi (Data & UI layer) serta desain UI/UX.
+    Hari 9-13 (Environment Setup & Core Logic): Instalasi Antigravity, konfigurasi Dart, dan pengembangan logika dasar purple team menggunakan Python (sesuai latar belakang Anda).
+    Hari 14-19 (Main Build Phase - Integrasi): Menghubungkan Gemini melalui proxy Lobster Trap dan membangun dashboard di Flutter.
+    Hari 20-23 (Testing & Refinement): Melakukan uji coba adversarial menggunakan suite bawaan Lobster Trap (./lobstertrap test) dan memperbaiki bug sebelum presentasi final.
+
+3. Saran Platform Desain UI/UX (PC Spek Rendah)
+Karena PC Anda menggunakan AMD EPYC 2 Core tanpa GPU, sangat disarankan menggunakan alat desain berbasis web (browser-based) agar beban pemrosesan lebih banyak berada di sisi server penyedia layanan, bukan di perangkat keras lokal Anda.
+
+    Figma: Standar industri yang berjalan sangat baik di browser.
+    Penpot: Alternatif open-source berbasis web yang ringan dan menggunakan format SVG secara asli.
+
+4. Tahapan Integrasi Teknologi
+Untuk menggabungkan Antigravity, Gemini, dan Veea Lobster Trap, ikuti alur integrasi berikut:
+
+    Antigravity IDE & Dart: Gunakan Antigravity sebagai lingkungan pengembangan utama untuk menulis kode Dart/Flutter Anda. IDE ini sudah disiapkan untuk mendukung alur kerja hackathon ini.
+    Google Gemini (Otak Agen): Akses model Gemini melalui Google AI Studio untuk prototyping cepat atau menggunakan Gemini API untuk integrasi langsung ke aplikasi. Pilih Gemini Flash untuk respons cepat pada fitur defense atau Gemini Pro untuk analisis keamanan yang kompleks.
+    Veea Lobster Trap (Trust Layer):
+        Jalankan Lobster Trap sebagai DPI Proxy menggunakan biner statis yang sudah jadi (paling ringan untuk spek PC Anda).
+        Konfigurasikan aplikasi Dart Anda agar mengirimkan permintaan API tidak langsung ke Google, melainkan melalui alamat lokal server Lobster Trap.
+        Gunakan file YAML untuk menentukan kebijakan keamanan (seperti memblokir prompt injection).
+    Alur Komunikasi: Aplikasi (Dart) → Lobster Trap (Inspeksi Keamanan) → Gemini API (Pemrosesan AI) → Lobster Trap (Inspeksi Output) → Dashboard Aplikasi.
+
+Dengan mengikuti tahapan ini, Anda akan memiliki sistem yang aman secara struktural dan memenuhi kriteria penilaian Application of Technology serta Technical Thinking
+
+
+@
