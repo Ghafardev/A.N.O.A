@@ -33,7 +33,7 @@ class ApiService {
   }
 
   /// Menggenerate YAML Rule berdasarkan prompt user
-  static Future<String?> generateYaml(String prompt) async {
+  static Future<String?> generateYaml({required String prompt}) async {
     try {
       final response = await http.post(
         Uri.parse('$_baseUrl/generate-yaml'),

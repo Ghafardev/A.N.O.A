@@ -44,12 +44,24 @@ class _YamlGeneratorState extends State<YamlGenerator> {
       _generatedYaml = '';
     });
 
-    // Panggil Gemini melalui backend
     final result = await ApiService.generateYaml(prompt: prompt);
+
+    if (!mounted) return;
 
     setState(() {
       _isGenerating = false;
-      _generatedYaml = result;
+      if (result != null) {
+        _generatedYaml = result;
+      } else {
+        _generatedYaml = '';
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(
+            content: Text('❌ Gagal membuat YAML. Periksa koneksi backend.'),
+            backgroundColor: Colors.redAccent,
+            duration: Duration(seconds: 3),
+          ),
+        );
+      }
     });
   }
 
@@ -262,8 +274,7 @@ class _YamlGeneratorState extends State<YamlGenerator> {
                   ),
                 ),
                 const Spacer(),
-                if (_generatedYaml.isNotEmpty &&
-                    !_generatedYaml.startsWith('#'))
+                if (_generatedYaml.isNotEmpty)
                   InkWell(
                     onTap: _copyToClipboard,
                     borderRadius: BorderRadius.circular(8),

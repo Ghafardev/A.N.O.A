@@ -1,0 +1,42 @@
+[
+  {
+    "time": "06:50:26",
+    "timestamp": "2026-05-17T06:50:26.796130",
+    "type": "Demo Analysis",
+    "mode": "red_team",
+    "source": "127.0.0.1",
+    "status": "ALLOWED"
+  },
+  {
+    "time": "06:49:33",
+    "timestamp": "2026-05-17T06:49:33.301522",
+    "type": "Demo Analysis",
+    "mode": "blue_team",
+    "source": "127.0.0.1",
+    "status": "ALLOWED"
+  },
+  {
+    "time": "06:48:36",
+    "timestamp": "2026-05-17T06:48:36.326748",
+    "type": "Demo Analysis",
+    "mode": "blue_team",
+    "source": "127.0.0.1",
+    "status": "ALLOWED"
+  },
+  {
+    "time": "06:46:45",
+    "timestamp": "2026-05-17T06:46:45.641829",
+    "type": "Demo Analysis",
+    "mode": "blue_team",
+    "source": "127.0.0.1",
+    "status": "ALLOWED"
+  },
+  {
+    "time": "06:46:11",
+    "timestamp": "2026-05-17T06:46:11.565047",
+    "type": "Demo Analysis",
+    "mode": "blue_team",
+    "source": "127.0.0.1",
+    "status": "ALLOWED"
+  }
+]

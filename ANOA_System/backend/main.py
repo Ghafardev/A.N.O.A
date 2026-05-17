@@ -1,9 +1,10 @@
 from fastapi import FastAPI, HTTPException
 from fastapi.middleware.cors import CORSMiddleware
 from pydantic import BaseModel
-from typing import Optional
+from typing import Optional, List
 import google.generativeai as genai
-import os, time
+import os, time, json
+from datetime import datetime
 from dotenv import load_dotenv
 
 load_dotenv()
@@ -13,6 +14,49 @@ app = FastAPI(
     description="Backend AI Engine – ANOA Purple Team Security Assistant",
     version="2.0.0",
 )
+
+# ─── Threat Logs Storage (In-Memory & File) ──────────────────────────────────
+THREAT_LOGS_FILE = "threat_logs.json"
+threat_logs: List[dict] = []
+
+def _load_threat_logs():
+    """Muat logs dari file jika ada."""
+    global threat_logs
+    if os.path.exists(THREAT_LOGS_FILE):
+        try:
+            with open(THREAT_LOGS_FILE, "r") as f:
+                threat_logs = json.load(f)
+        except Exception:
+            threat_logs = []
+    else:
+        threat_logs = []
+
+def _save_threat_logs():
+    """Simpan logs ke file."""
+    try:
+        with open(THREAT_LOGS_FILE, "w") as f:
+            json.dump(threat_logs, f, indent=2)
+    except Exception as e:
+        print(f"Error saving logs: {e}")
+
+def _log_threat_event(event_type: str, mode: str, status: str, source_ip: str = "127.0.0.1"):
+    """Catat event ancaman ke logs."""
+    global threat_logs
+    log_entry = {
+        "time": datetime.now().strftime("%H:%M:%S"),
+        "timestamp": datetime.now().isoformat(),
+        "type": event_type,
+        "mode": mode,
+        "source": source_ip,
+        "status": status,
+    }
+    threat_logs.insert(0, log_entry)  # Tambah di awal untuk newest first
+    if len(threat_logs) > 100:  # Simpan max 100 entries
+        threat_logs.pop()
+    _save_threat_logs()
+
+# Load existing logs on startup
+_load_threat_logs()
 
 # ─── CORS: Izinkan Flutter Web & Desktop mengakses backend ────────────────────
 app.add_middleware(
@@ -353,6 +397,7 @@ async def analyze(request: AnalyzeRequest):
     # ── Demo Mode: kembalikan respons contoh tanpa memanggil Gemini ──────────
     if DEMO_MODE or not GEMINI_API_KEY:
         demo_text = DEMO_RESPONSES.get(request.mode, DEMO_RESPONSES["blue_team"])
+        _log_threat_event("Demo Analysis", request.mode, "ALLOWED")
         return AnalyzeResponse(
             result=demo_text,
             mode=request.mode,
@@ -369,6 +414,7 @@ async def analyze(request: AnalyzeRequest):
     data_lower = request.data.lower()
     for pattern in injection_patterns:
         if pattern in data_lower:
+            _log_threat_event("Prompt Injection", request.mode, "BLOCKED")
             return AnalyzeResponse(
                 result=(
                     "🛡️ **[ANOA LOBSTER TRAP – DPI BLOCKED]**\n\n"
@@ -411,6 +457,15 @@ async def analyze(request: AnalyzeRequest):
                 model_used="DEMO_FALLBACK",
             )
         raise HTTPException(status_code=500, detail=f"Gemini API error: {err_str}")
+
+
+@app.get("/logs")
+def get_threat_logs():
+    """
+    Endpoint untuk mengambil riwayat threat logs.
+    Mengembalikan JSON dengan array logs terbaru.
+    """
+    return {"logs": threat_logs}
 
 
 @app.post("/generate-yaml", response_model=YamlResponse)
