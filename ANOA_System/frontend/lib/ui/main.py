@@ -1,12 +1,14 @@
-from fastapi import FastAPI
+from fastapi import FastAPI, HTTPException, Security, Depends
 from fastapi.middleware.cors import CORSMiddleware
-from pydantic import BaseModel
+from fastapi.security.api_key import APIKeyHeader
+from pydantic import BaseModel, Field
 import google.generativeai as genai
 import os
 import json
 import re
 from datetime import datetime
 from dotenv import load_dotenv
+from typing import List
 
 load_dotenv()
 
@@ -17,29 +19,37 @@ app = FastAPI(
 
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["*"],
+    allow_origins=["http://localhost", "http://127.0.0.1"],
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],
 )
 
+# Keamanan: API Key (Simulasi)
+API_KEY = os.getenv("ANOA_INTERNAL_KEY", "anoa-secret-key-123")
+api_key_header = APIKeyHeader(name="X-API-KEY", auto_error=False)
+
+async def get_api_key(api_key_header: str = Security(api_key_header)):
+    if api_key_header == API_KEY:
+        return api_key_header
+    raise HTTPException(status_code=403, detail="Could not validate credentials")
+
 # Konfigurasi Penyimpanan Log
 LOG_FILE = os.path.join(os.path.dirname(__file__), "threat_logs.json")
+MAX_INPUT_LENGTH = 5000  # Proteksi DoS/Quota
 
 # Lobster Trap Rules - Pola Regex yang lebih kuat
-LOBSTER_TRAP_RULES = [
-    r"(?i)(ignore|disregard|forget)\s+(all|previous|any)?\s*(instructions|prompts|directions)",
-    r"(?i)act\s+as\s+(a\s+)?(dan|jailbroken|unfiltered|expert\s+hacker|anarchy)",
-    r"(?i)system\s+prompt\s+reveal",
-    r"(?i)\[system\]",
-    r"(?i)decode\s+the\s+following\s+base64",
-    r"(?i)payload.*injection"
-]
+LOBSTER_TRAP_PATTERNS = re.compile(
+    r"(?i)(ignore|disregard|forget)\s+(all|previous|any)?\s*(instructions|prompts|directions)|"
+    r"act\s+as\s+(a\s+)?(dan|jailbroken|unfiltered|expert|hacker|anarchy)|"
+    r"system\s+prompt\s+reveal|\[system\]|decode.*base64|payload.*injection",
+    re.IGNORECASE
+)
 
 def dpi_inspect(text: str):
-    for rule in LOBSTER_TRAP_RULES:
-        if re.search(rule, text):
-            return True, rule
+    match = LOBSTER_TRAP_PATTERNS.search(text)
+    if match:
+        return True, match.group(0)
     return False, None
 
 def save_log_to_file(entry: dict):
@@ -65,17 +75,17 @@ if GEMINI_API_KEY:
     genai.configure(api_key=GEMINI_API_KEY)
 
 class Payload(BaseModel):
-    data: str
+    data: str = Field(..., max_length=MAX_INPUT_LENGTH)
     mode: str = "red_team" # red_team, blue_team, dll
 
 class YamlRequest(BaseModel):
-    prompt: str
+    prompt: str = Field(..., max_length=1000)
 
 @app.get("/")
 def read_root():
-    return {"status": "ANOA System Backend is running!"}
+    return {"status": "ANOA System API is Operational", "version": "2.1.0"}
 
-@app.get("/logs")
+@app.get("/logs", dependencies=[Depends(get_api_key)])
 def get_logs():
     """Membaca log dari file untuk ditampilkan di Dashboard."""
     if os.path.exists(LOG_FILE):
@@ -83,7 +93,7 @@ def get_logs():
             return {"logs": json.load(f)}
     return {"logs": []}
 
-@app.post("/analyze")
+@app.post("/analyze", dependencies=[Depends(get_api_key)])
 def analyze_payload(payload: Payload):
     # 1. Jalankan Lobster Trap DPI Inspection
     is_blocked, pattern = dpi_inspect(payload.data)
@@ -111,7 +121,7 @@ def analyze_payload(payload: Payload):
         "mode": payload.mode,
     }
 
-@app.post("/generate-yaml")
+@app.post("/generate-yaml", dependencies=[Depends(get_api_key)])
 def generate_yaml(request: YamlRequest):
     # Stub sementara untuk mengembalikan YAML yang kompatibel dengan frontend.
     return {

@@ -62,7 +62,10 @@ class _DashboardScreenState extends State<DashboardScreen> {
 
   Future<void> _fetchLogs() async {
     try {
-      final response = await http.get(Uri.parse('http://127.0.0.1:8000/logs'));
+      final response = await http.get(
+        Uri.parse('http://127.0.0.1:8000/logs'),
+        headers: {'X-API-KEY': 'anoa-secret-key-123'},
+      );
       if (response.statusCode == 200) {
         setState(() {
           _logs = json.decode(response.body)['logs'];

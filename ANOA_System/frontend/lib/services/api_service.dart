@@ -2,75 +2,52 @@ import 'dart:convert';
 import 'package:http/http.dart' as http;
 
 class ApiService {
-  static const String baseUrl = 'http://127.0.0.1:8000';
+  static const String _baseUrl = 'http://127.0.0.1:8000';
+  static const String _apiKey = 'anoa-secret-key-123';
 
-  // ─── Analyze: Purple Team AI ────────────────────────────────────────────────
-  static Future<String> analyze({
-    required String data,
-    required String mode,
-    String? context,
-  }) async {
+  static Map<String, String> get _headers => {
+        'Content-Type': 'application/json',
+        'X-API-KEY': _apiKey,
+      };
+
+  /// Mengirim payload untuk dianalisis oleh Gemini via Lobster Trap DPI
+  static Future<String> analyze({required String data, required String mode}) async {
     try {
-      final body = <String, dynamic>{'data': data, 'mode': mode};
-      if (context != null && context.isNotEmpty) {
-        body['context'] = context;
-      }
-
-      final response = await http
-          .post(
-            Uri.parse('$baseUrl/analyze'),
-            headers: {'Content-Type': 'application/json'},
-            body: jsonEncode(body),
-          )
-          .timeout(const Duration(seconds: 30));
+      final response = await http.post(
+        Uri.parse('$_baseUrl/analyze'),
+        headers: _headers,
+        body: json.encode({'data': data, 'mode': mode}),
+      );
 
       if (response.statusCode == 200) {
-        final json = jsonDecode(response.body) as Map<String, dynamic>;
-        return json['result']?.toString() ?? '(Tidak ada respons dari AI)';
+        final body = json.decode(response.body);
+        return body['result'] ?? 'No response from AI.';
+      } else if (response.statusCode == 403) {
+        return '🛡️ [AUTH ERROR] Access denied. Invalid API Key.';
       } else {
-        final err = jsonDecode(response.body) as Map<String, dynamic>;
-        return '⚠️ Server Error ${response.statusCode}: ${err['detail'] ?? response.reasonPhrase}';
+        return 'Error: ${response.statusCode} - ${response.reasonPhrase}';
       }
     } catch (e) {
-      return '⚠️ Tidak dapat terhubung ke backend ANOA.\n'
-          'Pastikan server sudah berjalan:\n'
-          '  uvicorn main:app --reload\n\n'
-          'Backend URL: $baseUrl\nDetail: $e';
+      return 'Connection failed: $e';
     }
   }
 
-  // ─── Generate YAML Rules via Gemini ─────────────────────────────────────────
-  static Future<String> generateYaml({required String prompt}) async {
+  /// Menggenerate YAML Rule berdasarkan prompt user
+  static Future<String?> generateYaml(String prompt) async {
     try {
-      final response = await http
-          .post(
-            Uri.parse('$baseUrl/generate-yaml'),
-            headers: {'Content-Type': 'application/json'},
-            body: jsonEncode({'prompt': prompt}),
-          )
-          .timeout(const Duration(seconds: 30));
+      final response = await http.post(
+        Uri.parse('$_baseUrl/generate-yaml'),
+        headers: _headers,
+        body: json.encode({'prompt': prompt}),
+      );
 
       if (response.statusCode == 200) {
-        final json = jsonDecode(response.body) as Map<String, dynamic>;
-        return json['yaml_content']?.toString() ?? '# (Tidak ada output YAML)';
-      } else {
-        final err = jsonDecode(response.body) as Map<String, dynamic>;
-        return '# ⚠️ Error ${response.statusCode}: ${err['detail']}';
+        final body = json.decode(response.body);
+        return body['yaml_content'];
       }
+      return null;
     } catch (e) {
-      return '# ⚠️ Tidak dapat terhubung ke backend\n# Detail: $e';
-    }
-  }
-
-  // ─── Health Check ────────────────────────────────────────────────────────────
-  static Future<bool> checkHealth() async {
-    try {
-      final response = await http
-          .get(Uri.parse(baseUrl))
-          .timeout(const Duration(seconds: 5));
-      return response.statusCode == 200;
-    } catch (_) {
-      return false;
+      return null;
     }
   }
 }
