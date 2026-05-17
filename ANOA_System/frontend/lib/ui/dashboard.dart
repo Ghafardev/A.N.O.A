@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import '../settings_page.dart';
 import 'widgets/chart_widgets.dart';
 import 'widgets/chat_assistant.dart';
 import 'widgets/rag_builder.dart';
@@ -245,6 +246,15 @@ class _DashboardScreenState extends State<DashboardScreen> {
               ],
             ),
           ),
+          // Settings button
+          IconButton(
+            icon: const Icon(Icons.settings, color: Colors.white),
+            tooltip: 'Settings',
+            onPressed: () => Navigator.of(context).push(
+              MaterialPageRoute(builder: (context) => const SettingsPage()),
+            ),
+          ),
+          const SizedBox(width: 8),
           // Chat toggle button
           _buildTopBarBtn(
             icon: _chatOpen ? Icons.close : Icons.smart_toy_outlined,
