@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'settings_page.dart';
 
 // State Management untuk Bahasa
 class LanguageProvider extends ChangeNotifier {
@@ -161,88 +162,6 @@ class _MyHomePageState extends State<MyHomePage> {
         onPressed: () => setState(() => _showChat = !_showChat),
         tooltip: lang.labels['open_assistant'],
         child: Icon(_showChat ? Icons.close : Icons.smart_toy),
-      ),
-    );
-  }
-}
-
-// Halaman Pengaturan Baru
-class SettingsPage extends StatelessWidget {
-  const SettingsPage({super.key});
-
-  @override
-  Widget build(BuildContext context) {
-    final lang = Provider.of<LanguageProvider>(context);
-    final theme = Provider.of<ThemeProvider>(context);
-
-    return Scaffold(
-      appBar: AppBar(title: Text(lang.labels['settings']!)),
-      body: ListView(
-        padding: const EdgeInsets.all(16),
-        children: [
-          // SEKSI: Tampilan & Bahasa
-          Card(
-            child: Column(
-              children: [
-                SwitchListTile(
-                  title: Text(lang.labels['language']!),
-                  secondary: const Icon(Icons.language),
-                  value: lang.isEnglish,
-                  onChanged: (_) => lang.toggleLanguage(),
-                ),
-                SwitchListTile(
-                  title: Text(lang.labels['theme']!),
-                  secondary: const Icon(Icons.brightness_6),
-                  value: theme.isDarkMode,
-                  onChanged: (_) => theme.toggleTheme(),
-                ),
-              ],
-            ),
-          ),
-          const SizedBox(height: 16),
-          // SEKSI: Akun
-          Text(
-            lang.labels['account']!,
-            style: Theme.of(context).textTheme.titleMedium,
-          ),
-          Card(
-            child: Padding(
-              padding: const EdgeInsets.all(16),
-              child: Column(
-                children: [
-                  TextField(
-                    decoration: InputDecoration(
-                      labelText: lang.labels['username'],
-                    ),
-                  ),
-                  TextField(
-                    decoration: InputDecoration(
-                      labelText: lang.labels['password'],
-                    ),
-                    obscureText: true,
-                  ),
-                  const SizedBox(height: 10),
-                  ElevatedButton(
-                    onPressed: () {},
-                    child: Text(lang.labels['login']!),
-                  ),
-                ],
-              ),
-            ),
-          ),
-          const SizedBox(height: 16),
-          // SEKSI: Bantuan
-          Text(
-            lang.labels['help']!,
-            style: Theme.of(context).textTheme.titleMedium,
-          ),
-          Card(
-            child: Padding(
-              padding: const EdgeInsets.all(16),
-              child: Text(lang.labels['help_content']!),
-            ),
-          ),
-        ],
       ),
     );
   }
