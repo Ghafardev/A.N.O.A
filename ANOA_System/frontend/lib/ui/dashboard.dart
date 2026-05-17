@@ -1,4 +1,7 @@
 import 'package:flutter/material.dart';
+import 'dart:async';
+import 'dart:convert';
+import 'package:http/http.dart' as http;
 import '../settings_page.dart';
 import 'widgets/chart_widgets.dart';
 import 'widgets/chat_assistant.dart';
@@ -34,12 +37,41 @@ class DashboardScreen extends StatefulWidget {
 class _DashboardScreenState extends State<DashboardScreen> {
   int _selectedNav = 0;
   bool _chatOpen = false;
+  List<dynamic> _logs = [];
+  Timer? _pollingTimer;
 
   final _navItems = const [
     _NavItem(Icons.shield_outlined, 'Overview'),
     _NavItem(Icons.storage_outlined, 'RAG Builder'),
     _NavItem(Icons.code_rounded, 'YAML Generator'),
   ];
+
+  @override
+  void initState() {
+    super.initState();
+    _fetchLogs();
+    // Polling setiap 5 detik untuk mensimulasikan monitoring real-time
+    _pollingTimer = Timer.periodic(const Duration(seconds: 5), (_) => _fetchLogs());
+  }
+
+  @override
+  void dispose() {
+    _pollingTimer?.cancel();
+    super.dispose();
+  }
+
+  Future<void> _fetchLogs() async {
+    try {
+      final response = await http.get(Uri.parse('http://127.0.0.1:8000/logs'));
+      if (response.statusCode == 200) {
+        setState(() {
+          _logs = json.decode(response.body)['logs'];
+        });
+      }
+    } catch (e) {
+      debugPrint("Error fetching logs: $e");
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -491,14 +523,14 @@ class _DashboardScreenState extends State<DashboardScreen> {
   }
 
   Widget _buildThreatTable() {
-    final threats = [
-      ['2m ago', 'Prompt Injection', '192.168.1.45', 'BLOCKED', kDanger],
-      ['8m ago', 'Data Leak Attempt', '10.0.0.12', 'BLOCKED', kDanger],
-      ['15m ago', 'Phishing Pattern', '203.45.12.8', 'BLOCKED', kWarning],
-      ['22m ago', 'Credential Stuffing', '172.16.0.3', 'BLOCKED', kDanger],
-      ['31m ago', 'Normal Request', '192.168.1.100', 'ALLOWED', kSuccess],
-      ['45m ago', 'Normal Request', '10.0.0.55', 'ALLOWED', kSuccess],
-    ];
+    if (_logs.isEmpty) {
+      return const Padding(
+        padding: EdgeInsets.symmetric(vertical: 20),
+        child: Center(
+          child: Text("Waiting for incoming traffic...", style: TextStyle(color: kText2)),
+        ),
+      );
+    }
 
     return Column(
       children: [
@@ -558,8 +590,8 @@ class _DashboardScreenState extends State<DashboardScreen> {
             ],
           ),
         ),
-        ...threats.map(
-          (row) => Container(
+        ..._logs.map(
+          (log) => Container(
             padding: const EdgeInsets.symmetric(vertical: 12, horizontal: 12),
             decoration: const BoxDecoration(
               border: Border(bottom: BorderSide(color: kBorder, width: 0.5)),
@@ -569,21 +601,21 @@ class _DashboardScreenState extends State<DashboardScreen> {
                 Expanded(
                   flex: 2,
                   child: Text(
-                    row[0] as String,
+                    log['time'],
                     style: const TextStyle(color: kText2, fontSize: 13),
                   ),
                 ),
                 Expanded(
                   flex: 3,
                   child: Text(
-                    row[1] as String,
+                    log['type'],
                     style: const TextStyle(color: Colors.white, fontSize: 13),
                   ),
                 ),
                 Expanded(
                   flex: 3,
                   child: Text(
-                    row[2] as String,
+                    log['source'],
                     style: const TextStyle(color: kText2, fontSize: 13),
                   ),
                 ),
@@ -595,13 +627,13 @@ class _DashboardScreenState extends State<DashboardScreen> {
                       vertical: 4,
                     ),
                     decoration: BoxDecoration(
-                      color: (row[4] as Color).withValues(alpha: 0.1),
+                      color: (log['status'] == 'BLOCKED' ? kDanger : kSuccess).withValues(alpha: 0.1),
                       borderRadius: BorderRadius.circular(20),
                     ),
                     child: Text(
-                      row[3] as String,
+                      log['status'],
                       style: TextStyle(
-                        color: row[4] as Color,
+                        color: log['status'] == 'BLOCKED' ? kDanger : kSuccess,
                         fontSize: 11,
                         fontWeight: FontWeight.w700,
                       ),
