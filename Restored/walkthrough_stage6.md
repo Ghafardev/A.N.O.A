@@ -6,11 +6,11 @@ Pada Tahap 6, ANOA System beralih dari visualisasi statis ke sistem monitoring k
 
 ## 1. Integrasi API Log
 - **Backend:** Menambahkan endpoint `GET /logs` yang mengembalikan riwayat inspeksi terbaru.
-- **Backend:** Mengintegrasikan pencatatan otomatis ke dalam endpoint `/analyze`. Setiap permintaan yang masuk, baik aman maupun berbahaya, kini tercatat di memori sistem.
+- **Backend:** Mengintegrasikan pencatatan otomatis ke dalam file `threat_logs.json`. Setiap permintaan yang masuk kini tersimpan secara permanen bahkan jika server restart.
 - **Frontend:** Mengimplementasikan mekanika *Auto-Polling* pada `dashboard.dart`. Aplikasi sekarang melakukan refresh data setiap 5 detik tanpa perlu input manual dari pengguna.
 
 ## 2. Penguatan Lobster Trap (DPI Engine)
-Sistem deteksi ditingkatkan dari pemeriksaan string sederhana menjadi mesin berbasis **Regular Expression (Regex)**.
+Sistem deteksi ditingkatkan dari pemeriksaan string sederhana menjadi mesin berbasis **Regular Expression (Regex)** yang lebih kuat.
 
 **Pola yang sekarang dideteksi:**
 - `(?i)(ignore|disregard|forget)` : Mendeteksi upaya instruksi override (Prompt Injection).
