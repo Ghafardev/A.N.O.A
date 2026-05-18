@@ -69,6 +69,11 @@ class AnoaApp extends StatelessWidget {
       themeMode: themeProvider.isDarkMode ? ThemeMode.dark : ThemeMode.light,
       theme: _buildTheme(Brightness.light),
       darkTheme: _buildTheme(Brightness.dark),
+      // Tambahkan builder untuk global error handling UI
+      builder: (context, child) {
+        ErrorWidget.builder = (details) => _buildErrorCanvas(details);
+        return child!;
+      },
       home: const DashboardScreen(),
     );
   }
@@ -125,6 +130,23 @@ class AnoaApp extends StatelessWidget {
         hintStyle: const TextStyle(color: Colors.white38),
         contentPadding:
             const EdgeInsets.symmetric(horizontal: 16, vertical: 14),
+      ),
+    );
+  }
+
+  Widget _buildErrorCanvas(FlutterErrorDetails details) {
+    return Material(
+      child: Container(
+        color: const Color(0xFF0A0E1A),
+        padding: const EdgeInsets.all(20),
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            const Icon(Icons.gpp_maybe, color: Color(0xFFF87171), size: 64),
+            const SizedBox(height: 16),
+            Text("Security Sandbox Breach or UI Error", style: GoogleFonts.inter(color: Colors.white, fontWeight: FontWeight.bold)),
+          ],
+        ),
       ),
     );
   }
