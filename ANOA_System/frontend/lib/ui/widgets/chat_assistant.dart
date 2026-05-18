@@ -26,35 +26,35 @@ const _modes = [
     'Blue Team',
     '🔵',
     _kCyan,
-    'Deteksi ancaman & rekomendasi pertahanan...',
+    'Attack detection and defense recommendations...',
   ),
   _ModeConfig(
     'red_team',
     'Red Team',
     '🔴',
     _kDanger,
-    'Analisis kerentanan & vektor serangan...',
+    'Analysis of vulnerabilities and attack vectors...',
   ),
   _ModeConfig(
     'phishing',
     'Phishing',
     '🎣',
     _kWarning,
-    'Tempel teks email/URL yang dicurigai phishing...',
+    'Paste suspected phishing email/text/URL...',
   ),
   _ModeConfig(
     'log_audit',
     'Log Audit',
     '📋',
     _kPrimary,
-    'Tempel log server/aplikasi/SIEM untuk diaudit...',
+    'Paste log server/aplikasi/SIEM for audit...',
   ),
   _ModeConfig(
     'credential_detector',
     'Cred. Detect',
     '🔐',
     _kSuccess,
-    'Tempel kode atau teks yang ingin dicek credential-nya...',
+    'Paste code or text to check for credential exposure...',
   ),
 ];
 
@@ -88,11 +88,11 @@ class _ChatAssistantState extends State<ChatAssistant> {
           '👋 Halo! Saya **ANOA AI** – Purple Team Security Assistant.\n\n'
           'Pilih mode analisis di bawah, lalu kirim teks, kode, log, atau URL '
           'yang ingin Anda analisis. Saya akan memprosesnya menggunakan Gemini AI.\n\n'
-          '🔵 **Blue Team** – Pertahanan & mitigasi\n'
-          '🔴 **Red Team** – Analisis kerentanan\n'
-          '🎣 **Phishing** – Deteksi social engineering\n'
-          '📋 **Log Audit** – Analisis log & SOC\n'
-          '🔐 **Cred. Detect** – Deteksi credential bocor',
+          '🔵 Blue Team – Mitigation & Defense\n'
+          '🔴 Red Team – Analysis of Vulnerabilities\n'
+          '🎣 Phishing – Social Engineering Detection\n'
+          '📋 Log Audit – Log & SOC Analysis\n'
+          '🔐 Cred. Detect – Credential Exposure Detection',
       isUser: false,
     ),
   ];

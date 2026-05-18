@@ -21,12 +21,12 @@ class _YamlGeneratorState extends State<YamlGenerator> {
   bool _isGenerating = false;
 
   final _quickPrompts = [
-    '🚫 Blokir semua prompt injection attempt',
-    '🔐 Deteksi kebocoran API Key dan credential',
-    '🎣 Cegah pola phishing dalam output AI',
-    '🛡️ Batasi output data PII (nama, email, NIK)',
-    '⚠️ Tandai respons yang mengandung exploit code',
-    '🤖 Blokir jailbreak dan model manipulation',
+    '🚫 Block all request with prompt injection attempt',
+    '🔐 Detect API Key and credential exposure',
+    '🎣 Prevent phishing patterns in AI output',
+    '🛡️ Limit PII data output (name, email, NIK)',
+    '⚠️ Flag responses containing exploit code',
+    '🤖 Block jailbreak and model manipulation',
   ];
 
   @override
@@ -56,7 +56,7 @@ class _YamlGeneratorState extends State<YamlGenerator> {
         _generatedYaml = '';
         ScaffoldMessenger.of(context).showSnackBar(
           const SnackBar(
-            content: Text('❌ Gagal membuat YAML. Periksa koneksi backend.'),
+            content: Text('❌ Failed to generate YAML. Check backend connection.'),
             backgroundColor: Colors.redAccent,
             duration: Duration(seconds: 3),
           ),
@@ -69,7 +69,7 @@ class _YamlGeneratorState extends State<YamlGenerator> {
     Clipboard.setData(ClipboardData(text: _generatedYaml));
     ScaffoldMessenger.of(context).showSnackBar(
       const SnackBar(
-        content: Text('✅ YAML disalin ke clipboard!'),
+        content: Text('✅ YAML copied to clipboard!'),
         backgroundColor: _kSuccess,
         duration: Duration(seconds: 2),
       ),
@@ -97,8 +97,8 @@ class _YamlGeneratorState extends State<YamlGenerator> {
                 SizedBox(width: 12),
                 Expanded(
                   child: Text(
-                    'Tuliskan kebijakan keamanan dalam bahasa natural. '
-                    'Gemini AI akan men-generate YAML rules siap pakai untuk Veea Lobster Trap.',
+                    'Write security policies in natural language. '
+                    'Gemini AI will generate YAML rules ready for use in Veea Lobster Trap.',
                     style: TextStyle(color: Colors.white70, fontSize: 13),
                   ),
                 ),
@@ -193,7 +193,7 @@ class _YamlGeneratorState extends State<YamlGenerator> {
             ),
             const SizedBox(height: 4),
             const Text(
-              'Jelaskan aturan keamanan yang Anda inginkan (Bahasa Indonesia/Inggris)',
+              'Describe the security rules you want (Selected Language. English is recommended)',
               style: TextStyle(color: _kText2, fontSize: 12),
             ),
             const SizedBox(height: 16),
@@ -210,9 +210,9 @@ class _YamlGeneratorState extends State<YamlGenerator> {
                 textAlignVertical: TextAlignVertical.top,
                 decoration: const InputDecoration(
                   hintText:
-                      'Contoh: "Blokir semua permintaan yang mengandung pola '
-                      'prompt injection, terutama yang mencoba '
-                      'melewati filter dengan kata ignore previous instructions..."',
+                      'Example: "Block all requests containing '
+                      'prompt injection patterns, especially those attempting '
+                      'to bypass filters with the phrase "ignore previous instructions..."',
                   alignLabelWithHint: true,
                 ),
               ),
@@ -234,7 +234,7 @@ class _YamlGeneratorState extends State<YamlGenerator> {
                     : const Icon(Icons.auto_awesome, size: 18),
                 label: Text(
                   _isGenerating
-                      ? 'Gemini sedang generate...'
+                      ? 'Gemini is generating...'
                       : '✨ Generate YAML Rule',
                 ),
                 style: ElevatedButton.styleFrom(
@@ -306,7 +306,7 @@ class _YamlGeneratorState extends State<YamlGenerator> {
             ),
             const SizedBox(height: 4),
             const Text(
-              'Output Gemini AI – siap pakai untuk Veea Lobster Trap',
+              'Gemini AI output – ready for use in Veea Lobster Trap',
               style: TextStyle(color: _kText2, fontSize: 12),
             ),
             const SizedBox(height: 16),
@@ -323,12 +323,12 @@ class _YamlGeneratorState extends State<YamlGenerator> {
                           ),
                           const SizedBox(height: 16),
                           const Text(
-                            'Output YAML akan muncul di sini',
+                            'Output YAML will appear here',
                             style: TextStyle(color: _kText2),
                           ),
                           const SizedBox(height: 4),
                           const Text(
-                            'setelah Anda klik "Generate"',
+                            'after you click "Generate"',
                             style: TextStyle(color: _kText2, fontSize: 12),
                           ),
                         ],
