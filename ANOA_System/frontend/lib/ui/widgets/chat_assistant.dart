@@ -86,8 +86,8 @@ class _ChatAssistantState extends State<ChatAssistant> {
     ChatMessage(
       text:
           '👋 Halo! Saya **ANOA AI** – Purple Team Security Assistant.\n\n'
-          'Pilih mode analisis di bawah, lalu kirim teks, kode, log, atau URL '
-          'yang ingin Anda analisis. Saya akan memprosesnya menggunakan Gemini AI.\n\n'
+          'Choose analysis mode below, then send text, code, logs, or URLs '
+          'you want to analyze. I will process it using Gemini AI.\n\n'
           '🔵 Blue Team – Mitigation & Defense\n'
           '🔴 Red Team – Analysis of Vulnerabilities\n'
           '🎣 Phishing – Social Engineering Detection\n'
