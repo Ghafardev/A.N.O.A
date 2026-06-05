@@ -1,5 +1,140 @@
 [
   {
+    "time": "11:44:22",
+    "timestamp": "2026-06-05T11:44:22.134027",
+    "type": "Prompt Injection",
+    "mode": "blue_team",
+    "source": "127.0.0.1",
+    "status": "BLOCKED",
+    "detail": "Matched pattern: reveal system prompt"
+  },
+  {
+    "time": "11:44:22",
+    "timestamp": "2026-06-05T11:44:22.132272",
+    "type": "Prompt Injection",
+    "mode": "blue_team",
+    "source": "127.0.0.1",
+    "status": "BLOCKED",
+    "detail": "Matched pattern: act as a DAN"
+  },
+  {
+    "time": "11:44:22",
+    "timestamp": "2026-06-05T11:44:22.130539",
+    "type": "Demo Analysis",
+    "mode": "blue_team",
+    "source": "127.0.0.1",
+    "status": "ALLOWED",
+    "detail": "Clean"
+  },
+  {
+    "time": "11:44:22",
+    "timestamp": "2026-06-05T11:44:22.128757",
+    "type": "Prompt Injection",
+    "mode": "blue_team",
+    "source": "127.0.0.1",
+    "status": "BLOCKED",
+    "detail": "Matched pattern: ignore  previous instructions"
+  },
+  {
+    "time": "11:44:22",
+    "timestamp": "2026-06-05T11:44:22.126767",
+    "type": "Demo Analysis",
+    "mode": "blue_team",
+    "source": "127.0.0.1",
+    "status": "ALLOWED",
+    "detail": "Clean"
+  },
+  {
+    "time": "11:40:18",
+    "timestamp": "2026-06-05T11:40:18.361641",
+    "type": "Demo Analysis",
+    "mode": "blue_team",
+    "source": "127.0.0.1",
+    "status": "ALLOWED",
+    "detail": "Clean"
+  },
+  {
+    "time": "11:40:18",
+    "timestamp": "2026-06-05T11:40:18.359419",
+    "type": "Prompt Injection",
+    "mode": "blue_team",
+    "source": "127.0.0.1",
+    "status": "BLOCKED",
+    "detail": "Matched pattern: act as a DAN"
+  },
+  {
+    "time": "11:40:18",
+    "timestamp": "2026-06-05T11:40:18.356839",
+    "type": "Demo Analysis",
+    "mode": "blue_team",
+    "source": "127.0.0.1",
+    "status": "ALLOWED",
+    "detail": "Clean"
+  },
+  {
+    "time": "11:40:18",
+    "timestamp": "2026-06-05T11:40:18.354476",
+    "type": "Prompt Injection",
+    "mode": "blue_team",
+    "source": "127.0.0.1",
+    "status": "BLOCKED",
+    "detail": "Matched pattern: ignore  previous instructions"
+  },
+  {
+    "time": "11:40:18",
+    "timestamp": "2026-06-05T11:40:18.351935",
+    "type": "Demo Analysis",
+    "mode": "blue_team",
+    "source": "127.0.0.1",
+    "status": "ALLOWED",
+    "detail": "Clean"
+  },
+  {
+    "time": "11:39:53",
+    "timestamp": "2026-06-05T11:39:53.361109",
+    "type": "Demo Analysis",
+    "mode": "blue_team",
+    "source": "127.0.0.1",
+    "status": "ALLOWED",
+    "detail": "Clean"
+  },
+  {
+    "time": "11:39:53",
+    "timestamp": "2026-06-05T11:39:53.358696",
+    "type": "Prompt Injection",
+    "mode": "blue_team",
+    "source": "127.0.0.1",
+    "status": "BLOCKED",
+    "detail": "Matched pattern: act as a DAN"
+  },
+  {
+    "time": "11:39:53",
+    "timestamp": "2026-06-05T11:39:53.355914",
+    "type": "Demo Analysis",
+    "mode": "blue_team",
+    "source": "127.0.0.1",
+    "status": "ALLOWED",
+    "detail": "Clean"
+  },
+  {
+    "time": "11:39:53",
+    "timestamp": "2026-06-05T11:39:53.354175",
+    "type": "Prompt Injection",
+    "mode": "blue_team",
+    "source": "127.0.0.1",
+    "status": "BLOCKED",
+    "detail": "Matched pattern: ignore  previous instructions"
+  },
+  {
+    "time": "11:39:53",
+    "timestamp": "2026-06-05T11:39:53.352051",
+    "type": "Demo Analysis",
+    "mode": "blue_team",
+    "source": "127.0.0.1",
+    "status": "ALLOWED",
+    "detail": "Clean"
+  },
+  {
     "time": "06:50:26",
     "timestamp": "2026-05-17T06:50:26.796130",
     "type": "Demo Analysis",
