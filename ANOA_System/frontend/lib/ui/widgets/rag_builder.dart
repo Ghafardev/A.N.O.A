@@ -62,7 +62,7 @@ class _RagBuilderState extends State<RagBuilder> {
     ScaffoldMessenger.of(context).showSnackBar(
       const SnackBar(
         content: Text(
-          'File ditambahkan ke knowledge base (integrasi file_picker di Tahap 4)',
+          'File added to knowledge base (integrating file_picker at stage 4)',
         ),
         backgroundColor: _kPrimary,
       ),
@@ -117,8 +117,8 @@ class _RagBuilderState extends State<RagBuilder> {
           const SizedBox(width: 12),
           const Expanded(
             child: Text(
-              'RAG Builder memungkinkan ANOA AI menggunakan dokumen spesifik organisasi Anda '
-              'sebagai konteks tambahan, sehingga respons AI lebih relevan dan akurat.',
+              'RAG Builder allows ANOA AI to use specific documents from your organization '
+              'as additional context, making AI responses more relevant and accurate.',
               style: TextStyle(
                 color: Colors.white70,
                 fontSize: 13,
@@ -133,8 +133,8 @@ class _RagBuilderState extends State<RagBuilder> {
 
   Widget _buildUploadCard() {
     return _card(
-      title: '📁 Upload Dokumen Lokal',
-      subtitle: 'Didukung: PDF, TXT, MD, DOCX',
+      title: '📁 Upload Dokument',
+      subtitle: 'Supported: PDF, TXT, MD, DOCX',
       child: InkWell(
         onTap: _simulateFilePick,
         borderRadius: BorderRadius.circular(12),
@@ -155,7 +155,7 @@ class _RagBuilderState extends State<RagBuilder> {
               Icon(Icons.cloud_upload_outlined, color: _kPrimary, size: 40),
               SizedBox(height: 12),
               Text(
-                'Klik untuk pilih file',
+                'Click to select file',
                 style: TextStyle(
                   color: Colors.white,
                   fontWeight: FontWeight.w600,
@@ -163,7 +163,7 @@ class _RagBuilderState extends State<RagBuilder> {
               ),
               SizedBox(height: 4),
               Text(
-                'atau drag & drop ke sini',
+                'or drag & drop here',
                 style: TextStyle(color: _kText2, fontSize: 12),
               ),
             ],
@@ -176,7 +176,7 @@ class _RagBuilderState extends State<RagBuilder> {
   Widget _buildUrlCard() {
     return _card(
       title: '🌐 Online Resource (URL)',
-      subtitle: 'Tambahkan link website, repo, atau dokumentasi online',
+      subtitle: 'Add website link, repository, or online documentation',
       child: Row(
         children: [
           Expanded(
@@ -222,8 +222,8 @@ class _RagBuilderState extends State<RagBuilder> {
 
   Widget _buildSourceList() {
     return _card(
-      title: '📚 Knowledge Base (${_sources.length} sumber)',
-      subtitle: 'Semua sumber yang akan digunakan AI saat menjawab',
+      title: '📚 Knowledge Base (${_sources.length} sources)',
+      subtitle: 'All sources that will be used by AI when answering questions',
       child: Column(
         children: [
           if (_sources.isEmpty)
@@ -233,7 +233,7 @@ class _RagBuilderState extends State<RagBuilder> {
                 children: [
                   Icon(Icons.folder_open_outlined, color: _kText2, size: 40),
                   SizedBox(height: 12),
-                  Text('Belum ada sumber', style: TextStyle(color: _kText2)),
+                  Text('No sources available', style: TextStyle(color: _kText2)),
                 ],
               ),
             )
@@ -302,13 +302,13 @@ class _RagBuilderState extends State<RagBuilder> {
                   : () => ScaffoldMessenger.of(context).showSnackBar(
                       const SnackBar(
                         content: Text(
-                          'Knowledge base akan diproses di Tahap 4 (Backend Integration)',
+                          'Knowledge base will be processed in Stage 4 (Backend Integration)',
                         ),
                         backgroundColor: Color(0xFF34D399),
                       ),
                     ),
               icon: const Icon(Icons.sync, size: 18),
-              label: const Text('Proses Knowledge Base'),
+              label: const Text('Process Knowledge Base'),
               style: ElevatedButton.styleFrom(
                 backgroundColor: _kPrimary,
                 foregroundColor: Colors.white,

@@ -37,6 +37,13 @@ class LanguageProvider with ChangeNotifier {
     'language': 'Language',
     'theme': 'Appearance',
     'help': 'Help & Support',
+    'dashboard': 'Security Dashboard',
+    'ai_assistant': 'Purple Team AI',
+    'threat_logs': 'Recent Threat Logs',
+    'analyze': 'Analyze',
+    'input_placeholder': 'Enter code or network logs...',
+    'status_safe': 'Environment Secure',
+    'status_threat': 'Threat Detected',
     'help_content': 'ANOA System uses AI to analyze security threats. For more info, contact the Purple Team.',
   };
 
@@ -46,6 +53,13 @@ class LanguageProvider with ChangeNotifier {
     'language': 'Bahasa',
     'theme': 'Tampilan',
     'help': 'Bantuan & Dukungan',
+    'dashboard': 'Panel Keamanan',
+    'ai_assistant': 'AI Tim Ungu',
+    'threat_logs': 'Log Ancaman Terbaru',
+    'analyze': 'Analisis',
+    'input_placeholder': 'Masukkan kode atau log jaringan...',
+    'status_safe': 'Lingkungan Aman',
+    'status_threat': 'Ancaman Terdeteksi',
     'help_content': 'ANOA System menggunakan AI untuk menganalisis ancaman keamanan. Untuk informasi lebih lanjut, hubungi Purple Team.',
   };
 
@@ -69,6 +83,11 @@ class AnoaApp extends StatelessWidget {
       themeMode: themeProvider.isDarkMode ? ThemeMode.dark : ThemeMode.light,
       theme: _buildTheme(Brightness.light),
       darkTheme: _buildTheme(Brightness.dark),
+      // Tambahkan builder untuk global error handling UI
+      builder: (context, child) {
+        ErrorWidget.builder = (details) => _buildErrorCanvas(details);
+        return child!;
+      },
       home: const DashboardScreen(),
     );
   }
@@ -128,4 +147,26 @@ class AnoaApp extends StatelessWidget {
       ),
     );
   }
+
+  Widget _buildErrorCanvas(FlutterErrorDetails details) {
+    return Material(
+      child: Container(
+        color: const Color(0xFF0A0E1A),
+        padding: const EdgeInsets.all(20),
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            const Icon(Icons.gpp_maybe, color: Color(0xFFF87171), size: 64),
+            const SizedBox(height: 16),
+            Text("Security Sandbox Breach or UI Error", style: GoogleFonts.inter(color: Colors.white, fontWeight: FontWeight.bold)),
+          ],
+        ),
+      ),
+    );
+  }
+
+  // Pentest Tip: Gunakan obfuscation saat build
+  // flutter build apk --obfuscate --split-debug-info=./debug-info
+  // Untuk mencegah kebocoran API, jangan hardcode di Dart.
+  // Gunakan String.fromEnvironment('API_URL')
 }

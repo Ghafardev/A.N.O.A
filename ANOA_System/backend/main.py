@@ -3,11 +3,16 @@ from fastapi.middleware.cors import CORSMiddleware
 from pydantic import BaseModel
 from typing import Optional, List
 import google.generativeai as genai
-import os, time, json
+import os, time, json, re
 from datetime import datetime
-from dotenv import load_dotenv
 
-load_dotenv()
+try:
+    from dotenv import load_dotenv
+except ImportError:
+    load_dotenv = None
+
+if load_dotenv:
+    load_dotenv()
 
 app = FastAPI(
     title="ANOA System API",
@@ -72,6 +77,10 @@ GEMINI_API_KEY  = os.getenv("GEMINI_API_KEY")
 DEMO_MODE       = os.getenv("DEMO_MODE", "false").lower() == "true"  # set ke true jika quota habis
 GEMINI_PRIMARY  = "gemini-2.0-flash"
 GEMINI_FALLBACK = "gemini-1.5-flash"
+
+# Lobster Trap Configuration (Sebagai persiapan transisi ke Pre-built Binary Proxy)
+LOBSTER_TRAP_ENABLED = os.getenv("LOBSTER_TRAP_ENABLED", "true").lower() == "true"
+LOBSTER_TRAP_URL = os.getenv("LOBSTER_TRAP_URL", "http://127.0.0.1:8080")
 
 if GEMINI_API_KEY:
     genai.configure(api_key=GEMINI_API_KEY)
@@ -406,19 +415,22 @@ async def analyze(request: AnalyzeRequest):
 
     system_prompt = SYSTEM_PROMPTS.get(request.mode, SYSTEM_PROMPTS["blue_team"])
 
-    # ── Simulasi Lobster Trap DPI (Outbound Check) ───────────────────────────
-    injection_patterns = [
-        "ignore previous", "forget instructions", "jailbreak",
-        "bypass safety", "act as dan", "pretend you are",
-    ]
+    # ── Enhanced Lobster Trap DPI (Regex Based - Remediation V-03) ───────────
+    # Menggunakan regex sesuai saran di pentest_report.md
+    injection_patterns = re.compile(
+        r"(?i)(ignore|forget|disregard).{0,20}(previous|above|system).{0,20}(prompt|instruction)|"
+        r"(?i)(jailbreak|bypass|override).{0,20}(safety|filter|policy|restriction)|"
+        r"(?i)(act as|pretend to be|roleplay as).{0,30}(hacker|attacker|evil|malicious)|"
+        r"(?i)(reveal|show|print|expose).{0,20}(system prompt|instructions|api.?key)"
+    )
+
     data_lower = request.data.lower()
-    for pattern in injection_patterns:
-        if pattern in data_lower:
-            _log_threat_event("Prompt Injection", request.mode, "BLOCKED")
+    if injection_patterns.search(data_lower):
+            _log_threat_event("Prompt Injection (Regex)", request.mode, "BLOCKED")
             return AnalyzeResponse(
                 result=(
                     "🛡️ **[ANOA LOBSTER TRAP – DPI BLOCKED]**\n\n"
-                    f"Request diblokir: terdeteksi pola **Prompt Injection** (`{pattern}`).\n"
+                    "Request diblokir: terdeteksi pola **Prompt Injection/Jailbreak** via Regex Engine.\n"
                     "HTTP 403 Forbidden – Request tidak diteruskan ke Gemini API.\n\n"
                     "*Log insiden telah dicatat.*"
                 ),

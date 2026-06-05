@@ -250,7 +250,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
     ];
     final subtitles = [
       'Real-time threat monitoring & analytics',
-      'Kelola sumber knowledge base untuk AI',
+      'Build AI-powered knowledge base for RAG',
       'Generate custom firewall rules via AI',
     ];
     return Container(
@@ -293,7 +293,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
           // Chat toggle button
           _buildTopBarBtn(
             icon: _chatOpen ? Icons.close : Icons.smart_toy_outlined,
-            label: _chatOpen ? 'Tutup Chat' : 'AI Assistant',
+            label: _chatOpen ? 'Close Chat' : 'AI Assistant',
             color: kPrimary,
             onTap: () => setState(() => _chatOpen = !_chatOpen),
           ),
@@ -404,7 +404,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
                 flex: 3,
                 child: _buildCard(
                   title: 'DPI Inspection Timeline',
-                  subtitle: 'Jumlah inspeksi per jam (24 jam terakhir)',
+                  subtitle: 'Inspection per hours count (latest 24 hours)',
                   child: const SizedBox(height: 240, child: ThreatLineChart()),
                 ),
               ),
@@ -414,7 +414,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
                 flex: 2,
                 child: _buildCard(
                   title: 'Threat Categories',
-                  subtitle: 'Distribusi jenis ancaman',
+                  subtitle: 'Distribution of threat types',
                   child: const SizedBox(height: 240, child: ThreatPieChart()),
                 ),
               ),
@@ -425,7 +425,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
           // Recent Threats Table
           _buildCard(
             title: 'Recent Threat Log',
-            subtitle: 'Aktivitas ancaman terbaru yang dideteksi Lobster Trap',
+            subtitle: 'Latest detected threats in Lobster Trap',
             child: _buildThreatTable(),
           ),
         ],
@@ -669,7 +669,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
         );
       },
       backgroundColor: kPrimary,
-      tooltip: 'Buka AI Assistant (Floating)',
+      tooltip: 'Open AI Assistant (Floating)',
       child: const Icon(Icons.smart_toy_outlined, color: Colors.white),
     );
   }
