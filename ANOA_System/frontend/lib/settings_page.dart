@@ -174,7 +174,7 @@ class SettingsPage extends StatelessWidget {
       ),
       value: value,
       onChanged: onChanged,
-      activeColor: activeColor,
+      activeThumbColor: activeColor,
       activeTrackColor: activeColor.withValues(alpha: 0.3),
     );
   }
