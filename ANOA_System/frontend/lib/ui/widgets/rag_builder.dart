@@ -151,42 +151,45 @@ class _RagBuilderState extends State<RagBuilder> {
 
   Widget _buildUploadCard() {
     return _card(
-      title: '📁 Upload Dokument',
-      subtitle: 'Supported: PDF, TXT, MD, DOCX',
-      child: InkWell(
-        onTap: _simulateFilePick,
-        borderRadius: BorderRadius.circular(12),
-        child: Container(
-          width: double.infinity,
-          padding: const EdgeInsets.symmetric(vertical: 36),
-          decoration: BoxDecoration(
-            border: Border.all(
-              color: _kPrimary.withValues(alpha: 0.4),
-              style: BorderStyle.solid,
-              width: 1.5,
+      title: '📝 Manual Knowledge Input',
+      subtitle: 'Paste custom security docs, rules, or threat intel here',
+      child: Column(
+        children: [
+          TextField(
+            controller: _nameController,
+            style: const TextStyle(color: Colors.white, fontSize: 13),
+            decoration: const InputDecoration(
+              hintText: 'Document Name (e.g. Internal Server Policy)',
+              isDense: true,
+              prefixIcon: Icon(Icons.title, size: 18, color: _kText2),
             ),
-            borderRadius: BorderRadius.circular(12),
-            color: _kPrimary.withValues(alpha: 0.05),
           ),
-          child: const Column(
-            children: [
-              Icon(Icons.cloud_upload_outlined, color: _kPrimary, size: 40),
-              SizedBox(height: 12),
-              Text(
-                'Click to select file',
-                style: TextStyle(
-                  color: Colors.white,
-                  fontWeight: FontWeight.w600,
-                ),
-              ),
-              SizedBox(height: 4),
-              Text(
-                'or drag & drop here',
-                style: TextStyle(color: _kText2, fontSize: 12),
-              ),
-            ],
+          const SizedBox(height: 12),
+          TextField(
+            controller: _contentController,
+            maxLines: 4,
+            style: const TextStyle(color: Colors.white, fontSize: 12, height: 1.5),
+            decoration: const InputDecoration(
+              hintText: 'Paste content or rules here...',
+              alignLabelWithHint: true,
+            ),
           ),
-        ),
+          const SizedBox(height: 12),
+          SizedBox(
+            width: double.infinity,
+            child: ElevatedButton.icon(
+              onPressed: _addManualKnowledge,
+              icon: const Icon(Icons.add, size: 18),
+              label: const Text('Add to Knowledge Base'),
+              style: ElevatedButton.styleFrom(
+                backgroundColor: _kPrimary.withValues(alpha: 0.15),
+                foregroundColor: _kPrimary,
+                side: BorderSide(color: _kPrimary.withValues(alpha: 0.3)),
+                shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
+              ),
+            ),
+          ),
+        ],
       ),
     );
   }
