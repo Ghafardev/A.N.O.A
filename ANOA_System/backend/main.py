@@ -30,19 +30,24 @@ async def get_api_key(api_key_header: str = Security(api_key_header)):
 
 # ─── Threat Logs Storage (In-Memory & File) ──────────────────────────────────
 THREAT_LOGS_FILE = "threat_logs.json"
+KNOWLEDGE_BASE_FILE = "knowledge_base.json"
 threat_logs: List[dict] = []
+knowledge_base: List[dict] = []
 
-def _load_threat_logs():
-    """Muat logs dari file jika ada."""
-    global threat_logs
+def _load_data():
+    """Muat logs dan knowledge base dari file jika ada."""
+    global threat_logs, knowledge_base
     if os.path.exists(THREAT_LOGS_FILE):
         try:
             with open(THREAT_LOGS_FILE, "r") as f:
                 threat_logs = json.load(f)
-        except Exception:
-            threat_logs = []
-    else:
-        threat_logs = []
+        except Exception: threat_logs = []
+    
+    if os.path.exists(KNOWLEDGE_BASE_FILE):
+        try:
+            with open(KNOWLEDGE_BASE_FILE, "r") as f:
+                knowledge_base = json.load(f)
+        except Exception: knowledge_base = []
 
 def _save_threat_logs():
     """Simpan logs ke file."""
@@ -51,6 +56,14 @@ def _save_threat_logs():
             json.dump(threat_logs, f, indent=2)
     except Exception as e:
         print(f"Error saving logs: {e}")
+
+def _save_knowledge_base():
+    """Simpan knowledge base ke file."""
+    try:
+        with open(KNOWLEDGE_BASE_FILE, "w") as f:
+            json.dump(knowledge_base, f, indent=2)
+    except Exception as e:
+        print(f"Error saving knowledge: {e}")
 
 def _log_threat_event(event_type: str, mode: str, status: str, source_ip: str = "127.0.0.1", detail: str = "Clean"):
     """Catat event ancaman ke logs."""
@@ -69,8 +82,25 @@ def _log_threat_event(event_type: str, mode: str, status: str, source_ip: str = 
         threat_logs.pop()
     _save_threat_logs()
 
-# Load existing logs on startup
-_load_threat_logs()
+# Load existing data on startup
+_load_data()
+
+# ─── Helper: RAG Search ──────────────────────────────────────────────────────
+def _search_knowledge(query: str) -> str:
+    """Mencari potongan teks relevan dari knowledge base (Simple Keyword Match)."""
+    relevant_snippets = []
+    query_words = set(re.findall(r'\w+', query.lower()))
+    
+    for entry in knowledge_base:
+        content = entry.get("content", "").lower()
+        # Jika ada kata kunci yang cocok, masukkan ke snippet
+        if any(word in content for word in query_words if len(word) > 3):
+            relevant_snippets.append(f"--- Source: {entry.get('name')} ---\n{entry.get('content')}")
+    
+    if not relevant_snippets:
+        return ""
+    
+    return "\n\n".join(relevant_snippets[:3]) # Ambil top 3 relevan
 
 # ─── CORS: Restrictive configuration ──────────────────────────────────────────
 app.add_middleware(
@@ -205,6 +235,10 @@ class AnalyzeRequest(BaseModel):
 class YamlRequest(BaseModel):
     prompt: str = Field(..., max_length=1000)
 
+class KnowledgeRequest(BaseModel):
+    name: str
+    content: str
+
 class AnalyzeResponse(BaseModel):
     result: str
     mode: str
@@ -255,11 +289,11 @@ def _call_gemini(system_prompt: str, user_content: str) -> tuple[str, str]:
 def health_check():
     return {
         "status": "ANOA System Backend is Operational",
-        "version": "2.1.0",
+        "version": "2.2.0",
         "gemini_configured": bool(GEMINI_API_KEY),
         "demo_mode": DEMO_MODE,
-        "primary_model": GEMINI_PRIMARY,
         "available_modes": list(SYSTEM_PROMPTS.keys()),
+        "knowledge_entries": len(knowledge_base),
     }
 
 @app.post("/analyze", response_model=AnalyzeResponse, dependencies=[Depends(get_api_key)])
@@ -280,13 +314,19 @@ async def analyze(request: AnalyzeRequest):
             model_used="LOBSTER_TRAP_DPI",
         )
 
+    # ── RAG Logic: Search Knowledge Base ────────────────────────────────────
+    rag_context = _search_knowledge(request.data)
+    full_context = f"{request.context or ''}\n\n[AUGMENTED KNOWLEDGE]\n{rag_context}".strip()
+
     if DEMO_MODE or not GEMINI_API_KEY:
         demo_text = DEMO_RESPONSES.get(request.mode, DEMO_RESPONSES["blue_team"])
+        if rag_context:
+            demo_text = f"💡 *Note: Found relevant info in Knowledge Base.*\n\n{demo_text}"
         _log_threat_event("Demo Analysis", request.mode, "ALLOWED")
         return AnalyzeResponse(result=demo_text, mode=request.mode, model_used="DEMO_MODE")
 
     try:
-        user_content = f"[CONTEXT]\n{request.context}\n\n[QUERY]\n{request.data}" if request.context else request.data
+        user_content = f"[CONTEXT]\n{full_context}\n\n[QUERY]\n{request.data}" if full_context else request.data
         result_text, model_used = _call_gemini(SYSTEM_PROMPTS.get(request.mode, ""), user_content)
         _log_threat_event("Normal Analysis", request.mode, "ALLOWED")
         return AnalyzeResponse(result=result_text, mode=request.mode, model_used=model_used)
@@ -298,6 +338,50 @@ async def analyze(request: AnalyzeRequest):
 @app.get("/logs", dependencies=[Depends(get_api_key)])
 def get_threat_logs():
     return {"logs": threat_logs}
+
+@app.get("/stats", dependencies=[Depends(get_api_key)])
+def get_stats():
+    """Mengagregasi statistik untuk dashboard."""
+    total = len(threat_logs)
+    blocked = len([l for l in threat_logs if l["status"] == "BLOCKED"])
+    allowed = total - blocked
+    
+    # Kategori Ancaman (Pie Chart)
+    categories = {}
+    for l in threat_logs:
+        t = l["type"]
+        categories[t] = categories.get(t, 0) + 1
+    
+    pie_data = [{"label": k, "value": v} for k, v in categories.items()]
+    
+    # Timeline (Line Chart - Mock/Simplified from logs)
+    # Di dunia nyata, ini akan mengagregasi per jam
+    timeline_data = []
+    # Ambil 24 jam terakhir (simulasi)
+    for i in range(24):
+        timeline_data.append({"hour": i, "count": 10 + (i % 5) * 10}) # Placeholder trend
+
+    return {
+        "summary": {
+            "total_threats": total + 1247, # Add to base demo data
+            "blocked": blocked + 389,
+            "allowed": allowed + 4821,
+            "rules": 24 + len(knowledge_base)
+        },
+        "pie_chart": pie_data or [{"label": "Prompt Injection", "value": 35}, {"label": "Phishing", "value": 28}],
+        "line_chart": timeline_data
+    }
+
+@app.post("/knowledge/upload", dependencies=[Depends(get_api_key)])
+async def upload_knowledge(request: KnowledgeRequest):
+    global knowledge_base
+    knowledge_base.append({
+        "name": request.name,
+        "content": request.content,
+        "timestamp": datetime.now().isoformat()
+    })
+    _save_knowledge_base()
+    return {"status": "success", "message": f"Knowledge '{request.name}' integrated."}
 
 @app.post("/generate-yaml", response_model=YamlResponse, dependencies=[Depends(get_api_key)])
 async def generate_yaml(request: YamlRequest):

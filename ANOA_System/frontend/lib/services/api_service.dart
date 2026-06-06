@@ -50,4 +50,34 @@ class ApiService {
       return null;
     }
   }
-}
+
+  /// Mengambil statistik terbaru untuk dashboard
+  static Future<Map<String, dynamic>?> getStats() async {
+    try {
+      final response = await http.get(
+        Uri.parse('$_baseUrl/stats'),
+        headers: _headers,
+      );
+      if (response.statusCode == 200) {
+        return json.decode(response.body);
+      }
+      return null;
+    } catch (e) {
+      return null;
+    }
+  }
+
+  /// Mengunggah knowledge ke RAG backend
+  static Future<bool> uploadKnowledge({required String name, required String content}) async {
+    try {
+      final response = await http.post(
+        Uri.parse('$_baseUrl/knowledge/upload'),
+        headers: _headers,
+        body: json.encode({'name': name, 'content': content}),
+      );
+      return response.statusCode == 200;
+    } catch (e) {
+      return false;
+    }
+  }
+  }

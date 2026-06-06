@@ -11,38 +11,20 @@ const kText2 = Color(0xFF8892B0);
 
 // ─── Line Chart: Inspeksi DPI per Jam ────────────────────────────────────────
 class ThreatLineChart extends StatelessWidget {
-  const ThreatLineChart({super.key});
+  final List<dynamic>? data;
+  const ThreatLineChart({super.key, this.data});
 
   @override
   Widget build(BuildContext context) {
-    final spots = [
-      FlSpot(0, 12),
-      FlSpot(1, 28),
-      FlSpot(2, 18),
-      FlSpot(3, 45),
-      FlSpot(4, 32),
-      FlSpot(5, 67),
-      FlSpot(6, 55),
-      FlSpot(7, 73),
-      FlSpot(8, 48),
-      FlSpot(9, 81),
-      FlSpot(10, 62),
-      FlSpot(11, 90),
-      FlSpot(12, 74),
-      FlSpot(13, 58),
-      FlSpot(14, 85),
-      FlSpot(15, 71),
-      FlSpot(16, 93),
-      FlSpot(17, 66),
-      FlSpot(18, 44),
-      FlSpot(19, 55),
-      FlSpot(20, 38),
-      FlSpot(21, 29),
-      FlSpot(22, 41),
-      FlSpot(23, 35),
-    ];
+    final spots = data != null
+        ? data!.map((d) => FlSpot(d['hour'].toDouble(), d['count'].toDouble())).toList()
+        : [
+            FlSpot(0, 12), FlSpot(5, 67), FlSpot(10, 62),
+            FlSpot(15, 71), FlSpot(20, 38), FlSpot(23, 35),
+          ];
 
     return LineChart(
+// ...
       LineChartData(
         lineBarsData: [
           LineChartBarData(
@@ -110,7 +92,8 @@ class ThreatLineChart extends StatelessWidget {
 
 // ─── Pie Chart: Kategori Ancaman ─────────────────────────────────────────────
 class ThreatPieChart extends StatefulWidget {
-  const ThreatPieChart({super.key});
+  final List<dynamic>? data;
+  const ThreatPieChart({super.key, this.data});
   @override
   State<ThreatPieChart> createState() => _ThreatPieChartState();
 }
@@ -118,16 +101,26 @@ class ThreatPieChart extends StatefulWidget {
 class _ThreatPieChartState extends State<ThreatPieChart> {
   int _touched = -1;
 
-  final _sections = const [
-    _PieSection('Prompt Injection', 35, kDanger),
-    _PieSection('Phishing', 28, kWarning),
-    _PieSection('Data Leak', 20, kPrimary),
-    _PieSection('Credential Stuff', 12, kCyan),
-    _PieSection('Others', 5, kSuccess),
-  ];
+  List<_PieSection> get _sections {
+    if (widget.data == null || widget.data!.isEmpty) {
+      return const [
+        _PieSection('Prompt Injection', 35, kDanger),
+        _PieSection('Phishing', 28, kWarning),
+        _PieSection('Data Leak', 20, kPrimary),
+        _PieSection('Others', 17, kSuccess),
+      ];
+    }
+    
+    final colors = [kDanger, kWarning, kPrimary, kCyan, kSuccess];
+    return List.generate(widget.data!.length, (i) {
+      final d = widget.data![i];
+      return _PieSection(d['label'], d['value'].toDouble(), colors[i % colors.length]);
+    });
+  }
 
   @override
   Widget build(BuildContext context) {
+    final sectionsData = _sections;
     return Row(
       children: [
         Expanded(
@@ -144,14 +137,14 @@ class _ThreatPieChartState extends State<ThreatPieChart> {
                   });
                 },
               ),
-              sections: List.generate(_sections.length, (i) {
-                final s = _sections[i];
+              sections: List.generate(sectionsData.length, (i) {
+                final s = sectionsData[i];
                 final isT = i == _touched;
                 return PieChartSectionData(
                   value: s.value,
                   color: s.color,
                   radius: isT ? 85 : 72,
-                  title: '${s.value.toInt()}%',
+                  title: '${s.value.toInt()}',
                   titleStyle: TextStyle(
                     fontSize: isT ? 14 : 11,
                     fontWeight: FontWeight.w700,
@@ -168,7 +161,7 @@ class _ThreatPieChartState extends State<ThreatPieChart> {
         Column(
           mainAxisAlignment: MainAxisAlignment.center,
           crossAxisAlignment: CrossAxisAlignment.start,
-          children: _sections
+          children: sectionsData
               .map(
                 (s) => Padding(
                   padding: const EdgeInsets.symmetric(vertical: 5),

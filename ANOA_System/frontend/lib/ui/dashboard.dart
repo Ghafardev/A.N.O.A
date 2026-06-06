@@ -38,6 +38,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
   int _selectedNav = 0;
   bool _chatOpen = false;
   List<dynamic> _logs = [];
+  Map<String, dynamic> _stats = {};
   Timer? _pollingTimer;
 
   final _navItems = const [
@@ -49,9 +50,9 @@ class _DashboardScreenState extends State<DashboardScreen> {
   @override
   void initState() {
     super.initState();
-    _fetchLogs();
+    _fetchData();
     // Polling setiap 5 detik untuk mensimulasikan monitoring real-time
-    _pollingTimer = Timer.periodic(const Duration(seconds: 5), (_) => _fetchLogs());
+    _pollingTimer = Timer.periodic(const Duration(seconds: 5), (_) => _fetchData());
   }
 
   @override
@@ -60,19 +61,26 @@ class _DashboardScreenState extends State<DashboardScreen> {
     super.dispose();
   }
 
-  Future<void> _fetchLogs() async {
+  Future<void> _fetchData() async {
     try {
-      final response = await http.get(
+      final logRes = await http.get(
         Uri.parse('http://127.0.0.1:8000/logs'),
         headers: {'X-API-KEY': 'anoa-secret-key-123'},
       );
-      if (response.statusCode == 200) {
+      if (logRes.statusCode == 200) {
         setState(() {
-          _logs = json.decode(response.body)['logs'];
+          _logs = json.decode(logRes.body)['logs'];
+        });
+      }
+
+      final statsData = await ApiService.getStats();
+      if (statsData != null) {
+        setState(() {
+          _stats = statsData;
         });
       }
     } catch (e) {
-      debugPrint("Error fetching logs: $e");
+      debugPrint("Error fetching data: $e");
     }
   }
 
@@ -352,6 +360,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
 
   // ── Halaman Overview ──────────────────────────────────────────────────────────
   Widget _buildOverviewPage() {
+    final summary = _stats['summary'] ?? {};
     return SingleChildScrollView(
       padding: const EdgeInsets.all(24),
       child: Column(
@@ -362,7 +371,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
             children: [
               _buildStatCard(
                 'Threats Detected',
-                '1,247',
+                '${summary['total_threats'] ?? 0}',
                 Icons.warning_amber_rounded,
                 kDanger,
                 '+12%',
@@ -370,7 +379,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
               const SizedBox(width: 16),
               _buildStatCard(
                 'Requests Blocked',
-                '389',
+                '${summary['blocked'] ?? 0}',
                 Icons.block_rounded,
                 kWarning,
                 '+5%',
@@ -378,7 +387,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
               const SizedBox(width: 16),
               _buildStatCard(
                 'Safe Requests',
-                '4,821',
+                '${summary['allowed'] ?? 0}',
                 Icons.check_circle_outline,
                 kSuccess,
                 '+3%',
@@ -386,7 +395,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
               const SizedBox(width: 16),
               _buildStatCard(
                 'Active YAML Rules',
-                '24',
+                '${summary['rules'] ?? 0}',
                 Icons.code_rounded,
                 kCyan,
                 '0%',
@@ -405,7 +414,10 @@ class _DashboardScreenState extends State<DashboardScreen> {
                 child: _buildCard(
                   title: 'DPI Inspection Timeline',
                   subtitle: 'Inspection per hours count (latest 24 hours)',
-                  child: const SizedBox(height: 240, child: ThreatLineChart()),
+                  child: SizedBox(
+                    height: 240, 
+                    child: ThreatLineChart(data: _stats['line_chart'])
+                  ),
                 ),
               ),
               const SizedBox(width: 16),
@@ -415,12 +427,16 @@ class _DashboardScreenState extends State<DashboardScreen> {
                 child: _buildCard(
                   title: 'Threat Categories',
                   subtitle: 'Distribution of threat types',
-                  child: const SizedBox(height: 240, child: ThreatPieChart()),
+                  child: SizedBox(
+                    height: 240, 
+                    child: ThreatPieChart(data: _stats['pie_chart'])
+                  ),
                 ),
               ),
             ],
           ),
           const SizedBox(height: 24),
+// ...
 
           // Recent Threats Table
           _buildCard(
