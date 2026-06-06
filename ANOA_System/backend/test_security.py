@@ -1,8 +1,12 @@
+import os
 import requests
 import json
 
-BASE_URL = "http://127.0.0.1:8000"
-API_KEY = "anoa-secret-key-123"
+BASE_URL = os.getenv("ANOA_BASE_URL", "http://127.0.0.1:8000")
+API_KEY = os.getenv("ANOA_INTERNAL_KEY")
+if not API_KEY:
+    print("Error: ANOA_INTERNAL_KEY not set. Set it in environment or .env before running tests.")
+    raise SystemExit(1)
 HEADERS = {"X-API-KEY": API_KEY}
 
 def test_v01_unauthenticated_access():

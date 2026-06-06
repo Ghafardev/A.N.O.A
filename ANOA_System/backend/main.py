@@ -21,7 +21,10 @@ app = FastAPI(
 )
 
 # ─── Security: API Key ──────────────────────────────────────────────────────
-API_KEY = os.getenv("ANOA_INTERNAL_KEY", "anoa-secret-key-123")
+# The API key must be provided via environment variable for security.
+API_KEY = os.getenv("ANOA_INTERNAL_KEY")
+if not API_KEY:
+    raise RuntimeError("ANOA_INTERNAL_KEY environment variable is required. Set it before starting the server.")
 api_key_header = APIKeyHeader(name="X-API-KEY", auto_error=False)
 
 async def get_api_key(api_key_header: str = Security(api_key_header)):
@@ -328,9 +331,14 @@ def health_check():
 
 @app.post("/analyze", response_model=AnalyzeResponse, dependencies=[Depends(get_api_key)])
 async def analyze(request: AnalyzeRequest):
-    # ── Lobster Trap DPI (Regex) ─────────────────────────────────────────────
-    match = LOBSTER_TRAP_PATTERNS.search(request.data)
+    # ── Lobster Trap DPI (Regex) with normalization to catch obfuscation like "I G N O R E"
+    raw_text = request.data or ""
+    # Normalize by removing all non-alphanumeric characters to detect spaced/obfuscated words
+    normalized_text = re.sub(r'[^A-Za-z0-9]', '', raw_text).lower()
+
+    match = LOBSTER_TRAP_PATTERNS.search(raw_text) or LOBSTER_TRAP_PATTERNS.search(normalized_text)
     if match:
+        # When matching normalized text, .group(0) may be from the normalized string; keep detail short
         pattern = match.group(0)
         _log_threat_event("Prompt Injection", request.mode, "BLOCKED", detail=f"Matched pattern: {pattern}")
         return AnalyzeResponse(
