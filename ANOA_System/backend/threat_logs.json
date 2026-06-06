@@ -1,5 +1,14 @@
 [
   {
+    "time": "07:15:56",
+    "timestamp": "2026-06-06T07:15:56.531541",
+    "type": "Demo Analysis",
+    "mode": "blue_team",
+    "source": "127.0.0.1",
+    "status": "ALLOWED",
+    "detail": "Clean"
+  },
+  {
     "time": "11:44:22",
     "timestamp": "2026-06-05T11:44:22.134027",
     "type": "Prompt Injection",
