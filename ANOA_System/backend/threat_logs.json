@@ -1,5 +1,14 @@
 [
   {
+    "time": "07:23:40",
+    "timestamp": "2026-06-06T07:23:40.714583",
+    "type": "Demo Analysis",
+    "mode": "red_team",
+    "source": "127.0.0.1",
+    "status": "ALLOWED",
+    "detail": "Clean"
+  },
+  {
     "time": "07:15:56",
     "timestamp": "2026-06-06T07:15:56.531541",
     "type": "Demo Analysis",
