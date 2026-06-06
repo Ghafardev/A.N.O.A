@@ -24,6 +24,8 @@ class RagBuilder extends StatefulWidget {
 
 class _RagBuilderState extends State<RagBuilder> {
   final _urlController = TextEditingController();
+  final _nameController = TextEditingController();
+  final _contentController = TextEditingController();
   bool _isProcessing = false;
   final List<KnowledgeSource> _sources = [
     KnowledgeSource(name: 'OWASP Top 10 2023.pdf', type: 'file', icon: '📄'),
@@ -34,6 +36,8 @@ class _RagBuilderState extends State<RagBuilder> {
   @override
   void dispose() {
     _urlController.dispose();
+    _nameController.dispose();
+    _contentController.dispose();
     super.dispose();
   }
 
@@ -50,16 +54,50 @@ class _RagBuilderState extends State<RagBuilder> {
     setState(() => _sources.removeAt(index));
   }
 
-  void _simulateFilePick() {
-    setState(() {
-      _sources.add(
-        KnowledgeSource(
-          name: 'Security_Report_${DateTime.now().millisecond}.pdf',
-          type: 'file',
-          icon: '📄',
+  Future<void> _addManualKnowledge() async {
+    final name = _nameController.text.trim();
+    final content = _contentController.text.trim();
+    if (name.isEmpty || content.isEmpty) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(
+          content: Text('Please provide both a document name and content.'),
+          backgroundColor: Colors.redAccent,
         ),
       );
-    });
+      return;
+    }
+
+    setState(() => _isProcessing = true);
+    final success = await ApiService.uploadKnowledge(
+      name: name,
+      content: content,
+    );
+
+    if (!mounted) return;
+
+    setState(() => _isProcessing = false);
+    if (success) {
+      setState(() {
+        _sources.add(
+          KnowledgeSource(name: name, type: 'file', icon: '📄'),
+        );
+        _nameController.clear();
+        _contentController.clear();
+      });
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(
+          content: Text('✅ Manual knowledge added successfully.'),
+          backgroundColor: Color(0xFF34D399),
+        ),
+      );
+    } else {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(
+          content: Text('❌ Failed to add manual knowledge. Please try again.'),
+          backgroundColor: Colors.redAccent,
+        ),
+      );
+    }
   }
 
   Future<void> _processKnowledge() async {

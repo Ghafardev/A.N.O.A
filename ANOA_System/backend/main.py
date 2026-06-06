@@ -4,9 +4,13 @@ from fastapi.security.api_key import APIKeyHeader
 from pydantic import BaseModel, Field
 from typing import Optional, List
 import google.generativeai as genai
-import os, time, json, re, yaml
+import os, time, json, re, yaml, warnings
 from datetime import datetime
 from dotenv import load_dotenv
+import uvicorn
+
+# Suppress Deprecation Warnings for clean terminal
+warnings.filterwarnings("ignore", category=FutureWarning)
 
 load_dotenv()
 
@@ -458,3 +462,6 @@ async def apply_rule(request: YamlResponse):
         raise HTTPException(status_code=400, detail=f"YAML Parsing Error: {str(e)}")
     except Exception as e:
         raise HTTPException(status_code=500, detail=f"Server Error: {str(e)}")
+
+if __name__ == "__main__":
+    uvicorn.run(app, host="127.0.0.1", port=8000)

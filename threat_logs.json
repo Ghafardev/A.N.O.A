@@ -1,0 +1,704 @@
+[
+  {
+    "time": "06:19:36",
+    "timestamp": "2026-06-06T06:19:36.335486",
+    "type": "Prompt Injection",
+    "mode": "blue_team",
+    "source": "127.0.0.1",
+    "status": "BLOCKED",
+    "detail": "Matched pattern: Ignore all previous instructions"
+  },
+  {
+    "time": "06:19:28",
+    "timestamp": "2026-06-06T06:19:28.596355",
+    "type": "Prompt Injection",
+    "mode": "blue_team",
+    "source": "127.0.0.1",
+    "status": "BLOCKED",
+    "detail": "Matched pattern: Act as a jailbroken"
+  },
+  {
+    "time": "06:19:21",
+    "timestamp": "2026-06-06T06:19:21.436560",
+    "type": "Prompt Injection",
+    "mode": "blue_team",
+    "source": "127.0.0.1",
+    "status": "BLOCKED",
+    "detail": "Matched pattern: Act as a jailbroken"
+  },
+  {
+    "time": "06:19:16",
+    "timestamp": "2026-06-06T06:19:16.597657",
+    "type": "Demo Analysis",
+    "mode": "blue_team",
+    "source": "127.0.0.1",
+    "status": "ALLOWED",
+    "detail": "Clean"
+  },
+  {
+    "time": "06:19:13",
+    "timestamp": "2026-06-06T06:19:13.107336",
+    "type": "Demo Analysis",
+    "mode": "red_team",
+    "source": "127.0.0.1",
+    "status": "ALLOWED",
+    "detail": "Clean"
+  },
+  {
+    "time": "06:19:05",
+    "timestamp": "2026-06-06T06:19:05.479546",
+    "type": "Demo Analysis",
+    "mode": "credential_detector",
+    "source": "127.0.0.1",
+    "status": "ALLOWED",
+    "detail": "Clean"
+  },
+  {
+    "time": "06:18:59",
+    "timestamp": "2026-06-06T06:18:59.060484",
+    "type": "Demo Analysis",
+    "mode": "red_team",
+    "source": "127.0.0.1",
+    "status": "ALLOWED",
+    "detail": "Clean"
+  },
+  {
+    "time": "06:18:55",
+    "timestamp": "2026-06-06T06:18:55.929279",
+    "type": "Demo Analysis",
+    "mode": "credential_detector",
+    "source": "127.0.0.1",
+    "status": "ALLOWED",
+    "detail": "Clean"
+  },
+  {
+    "time": "06:18:49",
+    "timestamp": "2026-06-06T06:18:49.696779",
+    "type": "Demo Analysis",
+    "mode": "credential_detector",
+    "source": "127.0.0.1",
+    "status": "ALLOWED",
+    "detail": "Clean"
+  },
+  {
+    "time": "06:18:44",
+    "timestamp": "2026-06-06T06:18:44.518140",
+    "type": "Demo Analysis",
+    "mode": "phishing",
+    "source": "127.0.0.1",
+    "status": "ALLOWED",
+    "detail": "Clean"
+  },
+  {
+    "time": "06:18:37",
+    "timestamp": "2026-06-06T06:18:37.313812",
+    "type": "Demo Analysis",
+    "mode": "red_team",
+    "source": "127.0.0.1",
+    "status": "ALLOWED",
+    "detail": "Clean"
+  },
+  {
+    "time": "06:18:31",
+    "timestamp": "2026-06-06T06:18:31.222135",
+    "type": "Demo Analysis",
+    "mode": "phishing",
+    "source": "127.0.0.1",
+    "status": "ALLOWED",
+    "detail": "Clean"
+  },
+  {
+    "time": "06:18:24",
+    "timestamp": "2026-06-06T06:18:24.072609",
+    "type": "Demo Analysis",
+    "mode": "credential_detector",
+    "source": "127.0.0.1",
+    "status": "ALLOWED",
+    "detail": "Clean"
+  },
+  {
+    "time": "06:18:20",
+    "timestamp": "2026-06-06T06:18:20.371457",
+    "type": "Prompt Injection",
+    "mode": "blue_team",
+    "source": "127.0.0.1",
+    "status": "BLOCKED",
+    "detail": "Matched pattern: Act as a jailbroken"
+  },
+  {
+    "time": "06:18:15",
+    "timestamp": "2026-06-06T06:18:15.717477",
+    "type": "Demo Analysis",
+    "mode": "phishing",
+    "source": "127.0.0.1",
+    "status": "ALLOWED",
+    "detail": "Clean"
+  },
+  {
+    "time": "06:18:12",
+    "timestamp": "2026-06-06T06:18:12.034139",
+    "type": "Demo Analysis",
+    "mode": "credential_detector",
+    "source": "127.0.0.1",
+    "status": "ALLOWED",
+    "detail": "Clean"
+  },
+  {
+    "time": "06:18:06",
+    "timestamp": "2026-06-06T06:18:06.162147",
+    "type": "Demo Analysis",
+    "mode": "credential_detector",
+    "source": "127.0.0.1",
+    "status": "ALLOWED",
+    "detail": "Clean"
+  },
+  {
+    "time": "06:17:58",
+    "timestamp": "2026-06-06T06:17:58.914406",
+    "type": "Prompt Injection",
+    "mode": "blue_team",
+    "source": "127.0.0.1",
+    "status": "BLOCKED",
+    "detail": "Matched pattern: Ignore all previous instructions"
+  },
+  {
+    "time": "06:17:55",
+    "timestamp": "2026-06-06T06:17:55.273598",
+    "type": "Demo Analysis",
+    "mode": "blue_team",
+    "source": "127.0.0.1",
+    "status": "ALLOWED",
+    "detail": "Clean"
+  },
+  {
+    "time": "06:17:47",
+    "timestamp": "2026-06-06T06:17:47.274518",
+    "type": "Prompt Injection",
+    "mode": "blue_team",
+    "source": "127.0.0.1",
+    "status": "BLOCKED",
+    "detail": "Matched pattern: Ignore all previous instructions"
+  },
+  {
+    "time": "06:17:41",
+    "timestamp": "2026-06-06T06:17:41.439633",
+    "type": "Demo Analysis",
+    "mode": "phishing",
+    "source": "127.0.0.1",
+    "status": "ALLOWED",
+    "detail": "Clean"
+  },
+  {
+    "time": "06:17:34",
+    "timestamp": "2026-06-06T06:17:34.391844",
+    "type": "Demo Analysis",
+    "mode": "phishing",
+    "source": "127.0.0.1",
+    "status": "ALLOWED",
+    "detail": "Clean"
+  },
+  {
+    "time": "06:17:30",
+    "timestamp": "2026-06-06T06:17:30.494654",
+    "type": "Prompt Injection",
+    "mode": "blue_team",
+    "source": "127.0.0.1",
+    "status": "BLOCKED",
+    "detail": "Matched pattern: Act as a jailbroken"
+  },
+  {
+    "time": "06:17:22",
+    "timestamp": "2026-06-06T06:17:22.892876",
+    "type": "Prompt Injection",
+    "mode": "blue_team",
+    "source": "127.0.0.1",
+    "status": "BLOCKED",
+    "detail": "Matched pattern: Act as a jailbroken"
+  },
+  {
+    "time": "06:17:16",
+    "timestamp": "2026-06-06T06:17:16.571047",
+    "type": "Demo Analysis",
+    "mode": "red_team",
+    "source": "127.0.0.1",
+    "status": "ALLOWED",
+    "detail": "Clean"
+  },
+  {
+    "time": "06:17:12",
+    "timestamp": "2026-06-06T06:17:12.132902",
+    "type": "Demo Analysis",
+    "mode": "blue_team",
+    "source": "127.0.0.1",
+    "status": "ALLOWED",
+    "detail": "Clean"
+  },
+  {
+    "time": "06:17:08",
+    "timestamp": "2026-06-06T06:17:08.991825",
+    "type": "Demo Analysis",
+    "mode": "red_team",
+    "source": "127.0.0.1",
+    "status": "ALLOWED",
+    "detail": "Clean"
+  },
+  {
+    "time": "06:17:05",
+    "timestamp": "2026-06-06T06:17:05.704956",
+    "type": "Demo Analysis",
+    "mode": "credential_detector",
+    "source": "127.0.0.1",
+    "status": "ALLOWED",
+    "detail": "Clean"
+  },
+  {
+    "time": "06:17:02",
+    "timestamp": "2026-06-06T06:17:02.125136",
+    "type": "Demo Analysis",
+    "mode": "phishing",
+    "source": "127.0.0.1",
+    "status": "ALLOWED",
+    "detail": "Clean"
+  },
+  {
+    "time": "06:16:56",
+    "timestamp": "2026-06-06T06:16:56.730817",
+    "type": "Prompt Injection",
+    "mode": "blue_team",
+    "source": "127.0.0.1",
+    "status": "BLOCKED",
+    "detail": "Matched pattern: Ignore all previous instructions"
+  },
+  {
+    "time": "06:16:49",
+    "timestamp": "2026-06-06T06:16:49.059938",
+    "type": "Demo Analysis",
+    "mode": "red_team",
+    "source": "127.0.0.1",
+    "status": "ALLOWED",
+    "detail": "Clean"
+  },
+  {
+    "time": "06:16:42",
+    "timestamp": "2026-06-06T06:16:42.032731",
+    "type": "Demo Analysis",
+    "mode": "credential_detector",
+    "source": "127.0.0.1",
+    "status": "ALLOWED",
+    "detail": "Clean"
+  },
+  {
+    "time": "06:16:34",
+    "timestamp": "2026-06-06T06:16:34.049097",
+    "type": "Demo Analysis",
+    "mode": "phishing",
+    "source": "127.0.0.1",
+    "status": "ALLOWED",
+    "detail": "Clean"
+  },
+  {
+    "time": "06:16:26",
+    "timestamp": "2026-06-06T06:16:26.500732",
+    "type": "Prompt Injection",
+    "mode": "blue_team",
+    "source": "127.0.0.1",
+    "status": "BLOCKED",
+    "detail": "Matched pattern: Ignore all previous instructions"
+  },
+  {
+    "time": "06:16:23",
+    "timestamp": "2026-06-06T06:16:23.127271",
+    "type": "Demo Analysis",
+    "mode": "blue_team",
+    "source": "127.0.0.1",
+    "status": "ALLOWED",
+    "detail": "Clean"
+  },
+  {
+    "time": "06:16:18",
+    "timestamp": "2026-06-06T06:16:18.220252",
+    "type": "Prompt Injection",
+    "mode": "blue_team",
+    "source": "127.0.0.1",
+    "status": "BLOCKED",
+    "detail": "Matched pattern: Act as a jailbroken"
+  },
+  {
+    "time": "06:16:12",
+    "timestamp": "2026-06-06T06:16:12.092162",
+    "type": "Demo Analysis",
+    "mode": "red_team",
+    "source": "127.0.0.1",
+    "status": "ALLOWED",
+    "detail": "Clean"
+  },
+  {
+    "time": "06:16:06",
+    "timestamp": "2026-06-06T06:16:06.177367",
+    "type": "Demo Analysis",
+    "mode": "phishing",
+    "source": "127.0.0.1",
+    "status": "ALLOWED",
+    "detail": "Clean"
+  },
+  {
+    "time": "06:16:02",
+    "timestamp": "2026-06-06T06:16:02.973584",
+    "type": "Demo Analysis",
+    "mode": "red_team",
+    "source": "127.0.0.1",
+    "status": "ALLOWED",
+    "detail": "Clean"
+  },
+  {
+    "time": "06:15:58",
+    "timestamp": "2026-06-06T06:15:58.013120",
+    "type": "Demo Analysis",
+    "mode": "phishing",
+    "source": "127.0.0.1",
+    "status": "ALLOWED",
+    "detail": "Clean"
+  },
+  {
+    "time": "06:15:52",
+    "timestamp": "2026-06-06T06:15:52.044555",
+    "type": "Demo Analysis",
+    "mode": "blue_team",
+    "source": "127.0.0.1",
+    "status": "ALLOWED",
+    "detail": "Clean"
+  },
+  {
+    "time": "06:15:45",
+    "timestamp": "2026-06-06T06:15:45.686453",
+    "type": "Demo Analysis",
+    "mode": "credential_detector",
+    "source": "127.0.0.1",
+    "status": "ALLOWED",
+    "detail": "Clean"
+  },
+  {
+    "time": "06:15:38",
+    "timestamp": "2026-06-06T06:15:38.621098",
+    "type": "Demo Analysis",
+    "mode": "credential_detector",
+    "source": "127.0.0.1",
+    "status": "ALLOWED",
+    "detail": "Clean"
+  },
+  {
+    "time": "06:15:31",
+    "timestamp": "2026-06-06T06:15:31.649672",
+    "type": "Demo Analysis",
+    "mode": "phishing",
+    "source": "127.0.0.1",
+    "status": "ALLOWED",
+    "detail": "Clean"
+  },
+  {
+    "time": "06:15:28",
+    "timestamp": "2026-06-06T06:15:28.621808",
+    "type": "Prompt Injection",
+    "mode": "blue_team",
+    "source": "127.0.0.1",
+    "status": "BLOCKED",
+    "detail": "Matched pattern: Act as a jailbroken"
+  },
+  {
+    "time": "06:15:24",
+    "timestamp": "2026-06-06T06:15:24.338475",
+    "type": "Demo Analysis",
+    "mode": "credential_detector",
+    "source": "127.0.0.1",
+    "status": "ALLOWED",
+    "detail": "Clean"
+  },
+  {
+    "time": "06:15:18",
+    "timestamp": "2026-06-06T06:15:18.945636",
+    "type": "Demo Analysis",
+    "mode": "blue_team",
+    "source": "127.0.0.1",
+    "status": "ALLOWED",
+    "detail": "Clean"
+  },
+  {
+    "time": "06:15:12",
+    "timestamp": "2026-06-06T06:15:12.962737",
+    "type": "Demo Analysis",
+    "mode": "phishing",
+    "source": "127.0.0.1",
+    "status": "ALLOWED",
+    "detail": "Clean"
+  },
+  {
+    "time": "06:15:07",
+    "timestamp": "2026-06-06T06:15:07.261816",
+    "type": "Prompt Injection",
+    "mode": "blue_team",
+    "source": "127.0.0.1",
+    "status": "BLOCKED",
+    "detail": "Matched pattern: Ignore all previous instructions"
+  },
+  {
+    "time": "06:15:04",
+    "timestamp": "2026-06-06T06:15:04.249019",
+    "type": "Demo Analysis",
+    "mode": "blue_team",
+    "source": "127.0.0.1",
+    "status": "ALLOWED",
+    "detail": "Clean"
+  },
+  {
+    "time": "06:15:00",
+    "timestamp": "2026-06-06T06:15:00.965288",
+    "type": "Demo Analysis",
+    "mode": "phishing",
+    "source": "127.0.0.1",
+    "status": "ALLOWED",
+    "detail": "Clean"
+  },
+  {
+    "time": "06:14:55",
+    "timestamp": "2026-06-06T06:14:55.167157",
+    "type": "Demo Analysis",
+    "mode": "red_team",
+    "source": "127.0.0.1",
+    "status": "ALLOWED",
+    "detail": "Clean"
+  },
+  {
+    "time": "06:14:49",
+    "timestamp": "2026-06-06T06:14:49.086067",
+    "type": "Prompt Injection",
+    "mode": "blue_team",
+    "source": "127.0.0.1",
+    "status": "BLOCKED",
+    "detail": "Matched pattern: Act as a jailbroken"
+  },
+  {
+    "time": "06:14:43",
+    "timestamp": "2026-06-06T06:14:43.165292",
+    "type": "Prompt Injection",
+    "mode": "blue_team",
+    "source": "127.0.0.1",
+    "status": "BLOCKED",
+    "detail": "Matched pattern: Ignore all previous instructions"
+  },
+  {
+    "time": "06:14:37",
+    "timestamp": "2026-06-06T06:14:37.795597",
+    "type": "Prompt Injection",
+    "mode": "blue_team",
+    "source": "127.0.0.1",
+    "status": "BLOCKED",
+    "detail": "Matched pattern: Act as a jailbroken"
+  },
+  {
+    "time": "06:14:31",
+    "timestamp": "2026-06-06T06:14:31.205579",
+    "type": "Prompt Injection",
+    "mode": "blue_team",
+    "source": "127.0.0.1",
+    "status": "BLOCKED",
+    "detail": "Matched pattern: Ignore all previous instructions"
+  },
+  {
+    "time": "06:14:24",
+    "timestamp": "2026-06-06T06:14:24.321275",
+    "type": "Demo Analysis",
+    "mode": "blue_team",
+    "source": "127.0.0.1",
+    "status": "ALLOWED",
+    "detail": "Clean"
+  },
+  {
+    "time": "06:14:19",
+    "timestamp": "2026-06-06T06:14:19.935463",
+    "type": "Demo Analysis",
+    "mode": "phishing",
+    "source": "127.0.0.1",
+    "status": "ALLOWED",
+    "detail": "Clean"
+  },
+  {
+    "time": "06:14:12",
+    "timestamp": "2026-06-06T06:14:12.796407",
+    "type": "Demo Analysis",
+    "mode": "credential_detector",
+    "source": "127.0.0.1",
+    "status": "ALLOWED",
+    "detail": "Clean"
+  },
+  {
+    "time": "06:14:05",
+    "timestamp": "2026-06-06T06:14:05.719287",
+    "type": "Prompt Injection",
+    "mode": "blue_team",
+    "source": "127.0.0.1",
+    "status": "BLOCKED",
+    "detail": "Matched pattern: Ignore all previous instructions"
+  },
+  {
+    "time": "06:14:01",
+    "timestamp": "2026-06-06T06:14:01.668563",
+    "type": "Demo Analysis",
+    "mode": "red_team",
+    "source": "127.0.0.1",
+    "status": "ALLOWED",
+    "detail": "Clean"
+  },
+  {
+    "time": "06:13:55",
+    "timestamp": "2026-06-06T06:13:55.726363",
+    "type": "Demo Analysis",
+    "mode": "red_team",
+    "source": "127.0.0.1",
+    "status": "ALLOWED",
+    "detail": "Clean"
+  },
+  {
+    "time": "06:13:49",
+    "timestamp": "2026-06-06T06:13:49.642364",
+    "type": "Demo Analysis",
+    "mode": "red_team",
+    "source": "127.0.0.1",
+    "status": "ALLOWED",
+    "detail": "Clean"
+  },
+  {
+    "time": "06:13:44",
+    "timestamp": "2026-06-06T06:13:44.636541",
+    "type": "Demo Analysis",
+    "mode": "blue_team",
+    "source": "127.0.0.1",
+    "status": "ALLOWED",
+    "detail": "Clean"
+  },
+  {
+    "time": "06:13:40",
+    "timestamp": "2026-06-06T06:13:40.786600",
+    "type": "Demo Analysis",
+    "mode": "blue_team",
+    "source": "127.0.0.1",
+    "status": "ALLOWED",
+    "detail": "Clean"
+  },
+  {
+    "time": "06:13:33",
+    "timestamp": "2026-06-06T06:13:33.409282",
+    "type": "Demo Analysis",
+    "mode": "red_team",
+    "source": "127.0.0.1",
+    "status": "ALLOWED",
+    "detail": "Clean"
+  },
+  {
+    "time": "06:13:29",
+    "timestamp": "2026-06-06T06:13:29.806042",
+    "type": "Demo Analysis",
+    "mode": "blue_team",
+    "source": "127.0.0.1",
+    "status": "ALLOWED",
+    "detail": "Clean"
+  },
+  {
+    "time": "06:13:24",
+    "timestamp": "2026-06-06T06:13:24.868729",
+    "type": "Prompt Injection",
+    "mode": "blue_team",
+    "source": "127.0.0.1",
+    "status": "BLOCKED",
+    "detail": "Matched pattern: Ignore all previous instructions"
+  },
+  {
+    "time": "06:13:20",
+    "timestamp": "2026-06-06T06:13:20.493201",
+    "type": "Demo Analysis",
+    "mode": "credential_detector",
+    "source": "127.0.0.1",
+    "status": "ALLOWED",
+    "detail": "Clean"
+  },
+  {
+    "time": "06:13:13",
+    "timestamp": "2026-06-06T06:13:13.061630",
+    "type": "Prompt Injection",
+    "mode": "blue_team",
+    "source": "127.0.0.1",
+    "status": "BLOCKED",
+    "detail": "Matched pattern: Act as a jailbroken"
+  },
+  {
+    "time": "06:13:08",
+    "timestamp": "2026-06-06T06:13:08.159968",
+    "type": "Demo Analysis",
+    "mode": "phishing",
+    "source": "127.0.0.1",
+    "status": "ALLOWED",
+    "detail": "Clean"
+  },
+  {
+    "time": "06:13:02",
+    "timestamp": "2026-06-06T06:13:02.527578",
+    "type": "Prompt Injection",
+    "mode": "blue_team",
+    "source": "127.0.0.1",
+    "status": "BLOCKED",
+    "detail": "Matched pattern: Act as a jailbroken"
+  },
+  {
+    "time": "06:12:55",
+    "timestamp": "2026-06-06T06:12:55.469715",
+    "type": "Demo Analysis",
+    "mode": "red_team",
+    "source": "127.0.0.1",
+    "status": "ALLOWED",
+    "detail": "Clean"
+  },
+  {
+    "time": "06:12:51",
+    "timestamp": "2026-06-06T06:12:51.393692",
+    "type": "Demo Analysis",
+    "mode": "blue_team",
+    "source": "127.0.0.1",
+    "status": "ALLOWED",
+    "detail": "Clean"
+  },
+  {
+    "time": "06:12:44",
+    "timestamp": "2026-06-06T06:12:44.462832",
+    "type": "Demo Analysis",
+    "mode": "red_team",
+    "source": "127.0.0.1",
+    "status": "ALLOWED",
+    "detail": "Clean"
+  },
+  {
+    "time": "06:12:39",
+    "timestamp": "2026-06-06T06:12:39.364733",
+    "type": "Demo Analysis",
+    "mode": "phishing",
+    "source": "127.0.0.1",
+    "status": "ALLOWED",
+    "detail": "Clean"
+  },
+  {
+    "time": "06:12:31",
+    "timestamp": "2026-06-06T06:12:31.824316",
+    "type": "Demo Analysis",
+    "mode": "credential_detector",
+    "source": "127.0.0.1",
+    "status": "ALLOWED",
+    "detail": "Clean"
+  },
+  {
+    "time": "06:12:26",
+    "timestamp": "2026-06-06T06:12:26.225216",
+    "type": "Demo Analysis",
+    "mode": "credential_detector",
+    "source": "127.0.0.1",
+    "status": "ALLOWED",
+    "detail": "Clean"
+  }
+]
