@@ -76,8 +76,22 @@ class ApiService {
         body: json.encode({'name': name, 'content': content}),
       );
       return response.statusCode == 200;
-    } catch (e) {
+      } catch (e) {
       return false;
-    }
-  }
-  }
+      }
+      }
+
+      /// Menerapkan YAML Rule ke DPI backend
+      static Future<bool> applyRule({required String yamlContent}) async {
+      try {
+      final response = await http.post(
+        Uri.parse('$_baseUrl/apply-rule'),
+        headers: _headers,
+        body: json.encode({'yaml_content': yamlContent}),
+      );
+      return response.statusCode == 200;
+      } catch (e) {
+      return false;
+      }
+      }
+      }

@@ -76,6 +76,32 @@ class _YamlGeneratorState extends State<YamlGenerator> {
     );
   }
 
+  Future<void> _applyRule() async {
+    if (_generatedYaml.isEmpty) return;
+
+    setState(() => _isGenerating = true);
+    final success = await ApiService.applyRule(yamlContent: _generatedYaml);
+    setState(() => _isGenerating = false);
+
+    if (!mounted) return;
+
+    if (success) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(
+          content: Text('🛡️ Rule applied and DPI engine updated!'),
+          backgroundColor: _kSuccess,
+        ),
+      );
+    } else {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(
+          content: Text('❌ Failed to apply rule. Check YAML format.'),
+          backgroundColor: Colors.redAccent,
+        ),
+      );
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     return Padding(
@@ -274,7 +300,35 @@ class _YamlGeneratorState extends State<YamlGenerator> {
                   ),
                 ),
                 const Spacer(),
-                if (_generatedYaml.isNotEmpty)
+                if (_generatedYaml.isNotEmpty) ...[
+                  InkWell(
+                    onTap: _applyRule,
+                    borderRadius: BorderRadius.circular(8),
+                    child: Container(
+                      padding: const EdgeInsets.symmetric(
+                        horizontal: 10,
+                        vertical: 6,
+                      ),
+                      decoration: BoxDecoration(
+                        color: _kPrimary.withValues(alpha: 0.12),
+                        borderRadius: BorderRadius.circular(8),
+                        border: Border.all(
+                          color: _kPrimary.withValues(alpha: 0.3),
+                        ),
+                      ),
+                      child: const Row(
+                        children: [
+                          Icon(Icons.flash_on, color: _kPrimary, size: 14),
+                          SizedBox(width: 6),
+                          Text(
+                            'Apply',
+                            style: TextStyle(color: _kPrimary, fontSize: 12),
+                          ),
+                        ],
+                      ),
+                    ),
+                  ),
+                  const SizedBox(width: 8),
                   InkWell(
                     onTap: _copyToClipboard,
                     borderRadius: BorderRadius.circular(8),
@@ -302,6 +356,7 @@ class _YamlGeneratorState extends State<YamlGenerator> {
                       ),
                     ),
                   ),
+                ],
               ],
             ),
             const SizedBox(height: 4),

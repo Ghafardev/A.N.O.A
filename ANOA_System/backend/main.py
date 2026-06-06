@@ -4,7 +4,7 @@ from fastapi.security.api_key import APIKeyHeader
 from pydantic import BaseModel, Field
 from typing import Optional, List
 import google.generativeai as genai
-import os, time, json, re
+import os, time, json, re, yaml
 from datetime import datetime
 from dotenv import load_dotenv
 
@@ -31,12 +31,32 @@ async def get_api_key(api_key_header: str = Security(api_key_header)):
 # ─── Threat Logs Storage (In-Memory & File) ──────────────────────────────────
 THREAT_LOGS_FILE = "threat_logs.json"
 KNOWLEDGE_BASE_FILE = "knowledge_base.json"
+CUSTOM_RULES_FILE = "custom_rules.json"
 threat_logs: List[dict] = []
 knowledge_base: List[dict] = []
+custom_rules: List[dict] = []
+
+# Base DPI Patterns
+BASE_PATTERNS = [
+    r".*(?:ignore|disregard|forget).*(?:instructions|prompts|directions)",
+    r".*act\s+as.*(?:dan|jailbroken|unfiltered|expert|hacker|anarchy)",
+    r".*system.*prompt.*",
+    r"\[system\]|decode.*base64|payload.*injection"
+]
+LOBSTER_TRAP_PATTERNS = re.compile("|".join(BASE_PATTERNS), re.IGNORECASE | re.DOTALL)
+
+def _recompile_rules():
+    """Menggabungkan base patterns dengan custom rules dari YAML."""
+    global LOBSTER_TRAP_PATTERNS
+    patterns = list(BASE_PATTERNS)
+    for rule in custom_rules:
+        for pattern in rule.get("patterns", []):
+            patterns.append(pattern)
+    LOBSTER_TRAP_PATTERNS = re.compile("|".join(patterns), re.IGNORECASE | re.DOTALL)
 
 def _load_data():
-    """Muat logs dan knowledge base dari file jika ada."""
-    global threat_logs, knowledge_base
+    """Muat logs, knowledge base, dan custom rules dari file jika ada."""
+    global threat_logs, knowledge_base, custom_rules
     if os.path.exists(THREAT_LOGS_FILE):
         try:
             with open(THREAT_LOGS_FILE, "r") as f:
@@ -48,6 +68,13 @@ def _load_data():
             with open(KNOWLEDGE_BASE_FILE, "r") as f:
                 knowledge_base = json.load(f)
         except Exception: knowledge_base = []
+
+    if os.path.exists(CUSTOM_RULES_FILE):
+        try:
+            with open(CUSTOM_RULES_FILE, "r") as f:
+                custom_rules = json.load(f)
+            _recompile_rules()
+        except Exception: custom_rules = []
 
 def _save_threat_logs():
     """Simpan logs ke file."""
@@ -102,6 +129,14 @@ def _search_knowledge(query: str) -> str:
     
     return "\n\n".join(relevant_snippets[:3]) # Ambil top 3 relevan
 
+def _save_custom_rules():
+    """Simpan custom rules ke file."""
+    try:
+        with open(CUSTOM_RULES_FILE, "w") as f:
+            json.dump(custom_rules, f, indent=2)
+    except Exception as e:
+        print(f"Error saving custom rules: {e}")
+
 # ─── CORS: Restrictive configuration ──────────────────────────────────────────
 app.add_middleware(
     CORSMiddleware,
@@ -119,15 +154,6 @@ GEMINI_FALLBACK = "gemini-1.5-flash"
 
 if GEMINI_API_KEY:
     genai.configure(api_key=GEMINI_API_KEY)
-
-# ─── Lobster Trap DPI Rules (Regex) ──────────────────────────────────────────
-LOBSTER_TRAP_PATTERNS = re.compile(
-    r".*(?:ignore|disregard|forget).*(?:instructions|prompts|directions)|"
-    r".*act\s+as.*(?:dan|jailbroken|unfiltered|expert|hacker|anarchy)|"
-    r".*system.*prompt.*|"
-    r"\[system\]|decode.*base64|payload.*injection",
-    re.IGNORECASE | re.DOTALL
-)
 
 # ─── System Prompts per Mode Agentic ─────────────────────────────────────────
 SYSTEM_PROMPTS = {
@@ -394,3 +420,41 @@ async def generate_yaml(request: YamlRequest):
         if "429" in str(e) or "quota" in str(e).lower():
             return YamlResponse(yaml_content="# Quota Gemini habis\n" + DEMO_YAML)
         raise HTTPException(status_code=500, detail=str(e))
+
+@app.post("/apply-rule", dependencies=[Depends(get_api_key)])
+async def apply_rule(request: YamlResponse):
+    """Menerima YAML, mengekstrak pola regex, dan menerapkannya ke DPI secara dinamis."""
+    global custom_rules
+    try:
+        # Parse YAML
+        data = yaml.safe_load(request.yaml_content)
+        if not data or 'rules' not in data:
+            raise HTTPException(status_code=400, detail="Invalid YAML format. 'rules' key missing.")
+        
+        new_rules_count = 0
+        for rule_data in data['rules']:
+            name = rule_data.get('name', 'unnamed_rule')
+            patterns = []
+            for condition in rule_data.get('conditions', []):
+                if condition.get('type') == 'content_pattern':
+                    patterns.extend(condition.get('patterns', []))
+            
+            if patterns:
+                custom_rules.append({
+                    "name": name,
+                    "patterns": patterns,
+                    "applied_at": datetime.now().isoformat()
+                })
+                new_rules_count += 1
+        
+        if new_rules_count > 0:
+            _save_custom_rules()
+            _recompile_rules()
+            return {"status": "success", "message": f"Applied {new_rules_count} new security rules dynamically."}
+        else:
+            return {"status": "warning", "message": "No valid content patterns found in YAML."}
+            
+    except yaml.YAMLError as e:
+        raise HTTPException(status_code=400, detail=f"YAML Parsing Error: {str(e)}")
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=f"Server Error: {str(e)}")
