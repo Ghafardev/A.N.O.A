@@ -336,10 +336,22 @@ async def analyze(request: AnalyzeRequest):
     # Normalize by removing all non-alphanumeric characters to detect spaced/obfuscated words
     normalized_text = re.sub(r'[^A-Za-z0-9]', '', raw_text).lower()
 
-    match = LOBSTER_TRAP_PATTERNS.search(raw_text) or LOBSTER_TRAP_PATTERNS.search(normalized_text)
-    if match:
-        # When matching normalized text, .group(0) may be from the normalized string; keep detail short
-        pattern = match.group(0)
+    regex_match = LOBSTER_TRAP_PATTERNS.search(raw_text) or LOBSTER_TRAP_PATTERNS.search(normalized_text)
+
+    # Additional heuristic: detect primary trigger words combined with secondary qualifiers
+    matched_pattern = None
+    if regex_match:
+        matched_pattern = regex_match.group(0)
+    else:
+        primary_keywords = ["ignore", "disregard", "forget"]
+        secondary_keywords = ["previous", "instructions", "prompts", "directions"]
+        found_primary = next((pk for pk in primary_keywords if pk in normalized_text), None)
+        found_secondary = next((sk for sk in secondary_keywords if sk in normalized_text), None)
+        if found_primary and found_secondary:
+            matched_pattern = f"heuristic:{found_primary}_{found_secondary}"
+
+    if matched_pattern:
+        pattern = matched_pattern
         _log_threat_event("Prompt Injection", request.mode, "BLOCKED", detail=f"Matched pattern: {pattern}")
         return AnalyzeResponse(
             result=(
